@@ -27,6 +27,7 @@ projeto/
 ├── pagamentos.html     # Contabilidade do apartamento
 ├── economias.html      # Valores guardados e compras
 ├── mensal.html         # Controle financeiro mensal
+├── importacao.html     # Tela de importação de parcelas
 │
 ├── css/
 │   ├── styles.css      # Estilos e design system
@@ -34,17 +35,21 @@ projeto/
 │   ├── pagamentos.css  # Estilos específicos de pagamentos
 │   ├── economias.css   # Estilos específicos de economias
 │   ├── mensal.css      # Estilos específicos do controle mensal
+│   ├── importacao.css  # Estilos específicos da importação
 │   └── responsive.css  # Media queries para responsividade
 │
 ├── js/
-│   ├── app.js          # Lógica principal e tema
+│   ├── app.js          # Lógica principal, tema e modais
 │   ├── dashboard.js    # Lógica do dashboard
 │   ├── pagamentos.js   # Lógica de pagamentos
 │   ├── economias.js    # Lógica de economias
 │   ├── mensal.js       # Lógica do controle mensal
-│   ├── storage.js      # Persistência dos dados
+│   ├── importacao.js   # Parser e lógica de importação
+│   ├── importacao-ui.js# Interface da tela de importação
+│   ├── storage.js      # Persistência dos dados (localStorage)
 │   ├── calculos.js     # Cálculos financeiros centralizados
-│   └── utils.js        # Utilitários (formatação BR)
+│   ├── toast.js        # Sistema de notificações (toast)
+│   └── utils.js        # Utilitários (formatação BR, máscara de moeda)
 │
 ├── data/
 │   └── dados-iniciais.js  # Dados da planilha (banco inicial)
@@ -86,18 +91,45 @@ Storage.restaurarDadosIniciais();
 
 ## Publicação Gratuita
 
-### GitHub Pages
-1. Crie um repositório no GitHub com o nome do projeto
-2. Faça upload de todos os arquivos
-3. Vá em **Settings > Pages**
-4. Em **Source**, selecione `main` branch
+### GitHub Pages (recomendado)
 
-O sistema ficará disponível em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`
+O projeto é 100% estático (HTML/CSS/JS + localStorage), então funciona redondo no
+GitHub Pages, sem custo e sem servidor.
+
+**Passo a passo:**
+
+1. **Crie o repositório no GitHub**
+   - Vá em [github.com/new](https://github.com/new)
+   - Dê um nome (ex.: `new-garden-financeiro`)
+   - **Privacidade:** escolha `Public` para publicar via Pages sem custo.
+   > ⚠️ Os dados em `data/dados-iniciais.js` (valores de parcelas e salários) ficarão
+   > **visíveis publicamente** num repositório público. Se não quiser expor seus valores,
+   > publique o repositório como `Private` (requer plano pago para Pages) ou deixe o
+   > `dados-iniciais.js` com dados fictícios/de exemplo.
+
+2. **Envie os arquivos**
+   ```bash
+   git remote add origin https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+3. **Ative o GitHub Pages**
+   - No repositório, vá em **Settings > Pages**
+   - Em **Source**, selecione: `Deploy from a branch`
+   - Branch: `main` / pasta: `/ (root)`
+   - Clique em **Save**
+
+4. **Acesse**
+   O sistema ficará disponível em:
+   `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`
 
 ### Vercel (alternativa gratuita)
+
 1. Crie conta em [vercel.com](https://vercel.com)
 2. Importe o repositório do GitHub
-3. A Vercel detecta automaticamente projeto estático
+3. A Vercel detecta automaticamente projeto estático (sem build)
+4. O deploy é automático a cada `push`
 
 ## Segurança
 
