@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Garden — Controle Mensal</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mensal.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="header-logo">
+                <span class="logo-icon">NG</span>
+                <div class="header-title">
+                    <h1>New Garden</h1>
+                    <p class="header-subtitle">Apto 1409 • Controle</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btnTema" class="btn-icon" aria-label="Alternar tema" title="Alternar tema claro/escuro">
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section class="page-content active" id="page-mensal">
+                <div class="page-heading">
+                    <h2>Controle Financeiro Mensal</h2>
+                </div>
+
+                <div class="month-selector">
+                    <button class="btn btn-icon-nav" id="btnMesAnterior">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                    </button>
+                    <div class="month-display">
+                        <span id="mesAtualNome">Setembro</span>
+                        <span id="mesAtualAno">2026</span>
+                    </div>
+                    <button class="btn btn-icon-nav" id="btnMesProximo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="salary-card">
+                    <div class="card-title">Salário do Mês</div>
+                    <div class="salary-value" id="salarioMes">R$ 0,00</div>
+                    <button class="btn btn-primary btn-full" id="btnEditarSalario">Editar Salário</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Distribuição do Mês</div>
+                    <div class="distribution-list" id="listaDistribuicao">
+                    </div>
+                </div>
+
+                <div class="chart-grid">
+                    <div class="card chart-card">
+                        <div class="card-title">Gráfico de Distribuição</div>
+                        <canvas id="chartDistribuicao"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Cartões de Crédito</div>
+                    <div class="cards-credit-grid" id="gridCartoesCredito">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Débitos Automáticos</div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="tabelaDebitos">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaDebitos">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Controle de Gastos Pessoais</div>
+                    <div class="gastos-container">
+                        <div class="form-group">
+                            <label for="limiteGastos">Limite Disponível</label>
+                            <input type="number" id="limiteGastos" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="gastosRealizados">Gastos Realizados</label>
+                            <input type="number" id="gastosRealizados" step="0.01" min="0">
+                        </div>
+                        <div class="budget-status" id="statusOrcamento"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Histórico de Meses</div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="tabelaHistorico">
+                            <thead>
+                                <tr>
+                                    <th>Mês</th>
+                                    <th>Salário</th>
+                                    <th>Apartamento</th>
+                                    <th>Economia</th>
+                                    <th>Gastos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaHistorico">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="9"/>
+                    <rect x="14" y="3" width="7" height="5"/>
+                    <rect x="14" y="12" width="7" height="9"/>
+                    <rect x="3" y="16" width="7" height="5"/>
+                </svg>
+                <span>Resumo</span>
+            </a>
+            <a href="pagamentos.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span>Contabilidade</span>
+            </a>
+            <a href="economias.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                    <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                </svg>
+                <span>Economias</span>
+            </a>
+            <a href="mensal.html" class="nav-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>Mensal</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Modal Editar Salário -->
+    <div class="modal-overlay" id="modalSalario">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Editar Salário e Distribuição</h3>
+                <button class="btn-close" data-fechar-modal>&times;</button>
+            </div>
+            <form id="formSalario">
+                <div class="form-group">
+                    <label for="salarioInput">Salário</label>
+                    <input type="number" id="salarioInput" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="reembolsoInput">Reembolso</label>
+                    <input type="number" id="reembolsoInput" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="divisaoApartamentoInput">Destino ao Apartamento</label>
+                    <input type="number" id="divisaoApartamentoInput" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="economiaInput">Destino à Economia</label>
+                    <input type="number" id="economiaInput" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="gastosFixosInput">Gastos Fixos</label>
+                    <input type="number" id="gastosFixosInput" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="gastosVariaveisInput">Gastos Variáveis</label>
+                    <input type="number" id="gastosVariaveisInput" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="data/dados-iniciais.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/calculos.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/mensal.js"></script>
+</body>
+</html>

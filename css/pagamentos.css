@@ -1,0 +1,14 @@
+/* Pagamentos page specific styles */
+
+.totals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+    .totals-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

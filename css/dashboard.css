@@ -1,0 +1,21 @@
+/* Dashboard specific styles */
+
+.totals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.totals-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+    .totals-summary {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}

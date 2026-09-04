@@ -1,0 +1,40 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Configurações de ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos de build
+dist/
+build/
+out/
+
+# Windows
+Thumbs.db
+Desktop.ini
+*.dll
+*.exe
+*.msi
+*.tmp
+*.log
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dados temporários
+.tmp/
+temp/
+
+# Controle de dados locais do sistema
+*.localstorage
