@@ -88,7 +88,7 @@ const Storage = {
      */
     atualizarPagamento(id, dados) {
         const pagamentos = this.getPagamentos();
-        const idx = pagamentos.findIndex(p => p.id === id);
+        const idx = pagamentos.findIndex(p => String(p.id) === String(id));
         if (idx !== -1) {
             pagamentos[idx] = { ...pagamentos[idx], ...dados };
             this.setPagamentos(pagamentos);
@@ -112,7 +112,7 @@ const Storage = {
      * Remove um pagamento
      */
     removerPagamento(id) {
-        const pagamentos = this.getPagamentos().filter(p => p.id !== id);
+        const pagamentos = this.getPagamentos().filter(p => String(p.id) !== String(id));
         this.setPagamentos(pagamentos);
     },
 

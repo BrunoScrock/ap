@@ -19,3 +19,114 @@
         grid-template-columns: repeat(6, 1fr);
     }
 }
+
+/* ==========================================
+   REFINAMENTO DO DASHBOARD
+   ========================================== */
+
+.page-hero {
+    margin-bottom: 20px;
+    padding: 0 2px;
+}
+
+.page-hero h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.page-hero p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Cards de estatística */
+.card-stat {
+    background: linear-gradient(160deg, var(--bg-card), color-mix(in srgb, var(--bg-card) 96%, var(--primary) 4%));
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-stat .card-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.card-value {
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+/* Card de progresso destacado */
+.progress-card {
+    border: 1px solid var(--border);
+}
+
+.mini-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mini-stat .mini-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+}
+
+.mini-stat .mini-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Gradiente de fundo nos charts */
+.chart-card canvas {
+    border-radius: var(--radius-sm);
+    background-color: var(--bg);
+    padding: 8px;
+}
+
+/* Ajusta título dos cards de gráfico */
+.chart-card .card-title {
+    margin-bottom: 16px;
+}
+
+/* Espaçamento do resumo em grid de 4 cartões */
+.cards-grid.stat-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.resumo-rapido {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.resumo-rapido-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 600px) {
+    .cards-grid.stat-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .cards-grid.stat-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .resumo-rapido-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

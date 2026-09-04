@@ -162,5 +162,66 @@ const Utils = {
      */
     chaveMes(ano, mes) {
         return `${ano}-${String(mes).padStart(2, '0')}`;
+    },
+
+    /**
+     * Formata um número no formato de campo de moeda (sem R$)
+     * ex: 1500 -> "1.500,00" | 2066.37 -> "2.066,37"
+     */
+    paraMoedaInput(valor) {
+        const numero = Math.round((valor || 0) * 100);
+        const reais = Math.floor(numero / 100);
+        const centavos = (numero % 100).toString().padStart(2, '0');
+        const reaisStr = reais.toLocaleString('pt-BR');
+        return `${reaisStr},${centavos}`;
+    },
+
+    /**
+     * Converte texto de moeda brasileira em número
+     * ex: "R$ 2.066,37" -> 2066.37 | "1.966,55" -> 1966.55
+     */
+    moedaParaNumero(texto) {
+        if (texto === null || texto === undefined) return 0;
+        let t = String(texto).trim();
+        t = t.replace(/[R$\s]/g, '');
+        if (t.includes(',')) {
+            t = t.replace(/\./g, '').replace(',', '.');
+        }
+        const numero = parseFloat(t);
+        return isNaN(numero) ? 0 : numero;
+    },
+
+    /**
+     * Aplica máscara de moeda brasileira em um campo de texto.
+     * O usuário digita e o valor é exibido formatado (ex: 1.500,00).
+     * Para ler o número use Utils.moedaParaNumero(input.value).
+     */
+    aplicarMascaraMoeda(input) {
+        if (!input) return;
+
+        const formatar = (valor) => {
+            // Remove tudo que não é dígito
+            const digitos = String(valor).replace(/\D/g, '');
+            if (!digitos) return '';
+            // Preenche com zeros à esquerda até um mínimo de centavos
+            const numero = parseInt(digitos, 10);
+            const reais = Math.floor(numero / 100);
+            const centavos = (numero % 100).toString().padStart(2, '0');
+            const reaisStr = reais.toLocaleString('pt-BR');
+            return `${reaisStr},${centavos}`;
+        };
+
+        const aoDigitar = (e) => {
+            input.value = formatar(input.value);
+            // Mantém o cursor no fim
+            input.setSelectionRange(input.value.length, input.value.length);
+        };
+
+        input.addEventListener('input', aoDigitar);
+        input.addEventListener('focus', () => {
+            if (!input.value) {
+                input.value = '';
+            }
+        });
     }
 };

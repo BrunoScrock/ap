@@ -35,9 +35,45 @@ function renderDashboard() {
     setTexto('valorPagoInfo', Utils.formatarMoeda(totalPago));
     setTexto('valorTotalInfo', Utils.formatarMoeda(valorTotal));
 
+    // Resumo rápido
+    renderResumoRapido(pagamentos, totalGuardado);
+
     // Gráficos
     desenharGraficoPagoDevedor(totalPago, saldoDevedor);
     desenharGraficoPagamentosMes(pagamentos);
+}
+
+function renderResumoRapido(pagamentos, totalGuardado) {
+    const container = document.getElementById('resumoRapido');
+    if (!container) return;
+
+    const pagos = Calculos.quantidadePagamentos(pagamentos);
+    const totalParcelas = pagamentos.length;
+    const ano = new Date().getFullYear();
+    const mes = new Date().getMonth() + 1;
+    const totalPagoMes = Calculos.totalPago(pagamentos, { mes, ano });
+    const totalINCC = Calculos.totalINCC(pagamentos);
+
+    container.innerHTML = `
+        <div class="resumo-rapido-grid">
+            <div class="mini-stat">
+                <span class="mini-label">Parcelas Pagas</span>
+                <span class="mini-value">${pagos} / ${totalParcelas}</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Pago no Mês</span>
+                <span class="mini-value">${Utils.formatarMoeda(totalPagoMes)}</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">INCC / Juros</span>
+                <span class="mini-value">${Utils.formatarMoeda(totalINCC)}</span>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Guardado</span>
+                <span class="mini-value">${Utils.formatarMoeda(totalGuardado)}</span>
+            </div>
+        </div>
+    `;
 }
 
 function setTexto(id, texto) {

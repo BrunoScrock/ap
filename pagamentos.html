@@ -88,6 +88,7 @@
                                     <th>Data</th>
                                     <th>INCC/Juros</th>
                                     <th>Status</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="corpoTabelaPagamentos">
@@ -156,7 +157,7 @@
                 </div>
                 <div class="form-group">
                     <label for="pagValor">Valor</label>
-                    <input type="number" id="pagValor" step="0.01" min="0" required>
+                    <input type="text" id="pagValor" inputmode="decimal" placeholder="0,00" required>
                 </div>
                 <div class="form-group">
                     <label for="pagDescricao">Descrição</label>
@@ -184,10 +185,99 @@
         </div>
     </div>
 
+    <!-- Modal Marcar como Pago -->
+    <div class="modal-overlay" id="modalMarcarPago">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Marcar como Pago</h3>
+                <button class="btn-close" data-fechar-modal>&times;</button>
+            </div>
+            <form id="formMarcarPago">
+                <input type="hidden" id="marcarPagId">
+                <div class="form-group">
+                    <label>Parcela</label>
+                    <div id="marcarPagDesc" class="form-static"></div>
+                </div>
+                <div class="form-group">
+                    <label for="marcarValor">Valor Pago</label>
+                    <input type="text" id="marcarValor" inputmode="decimal" placeholder="0,00" required>
+                </div>
+                <div class="form-group">
+                    <label for="marcarData">Data do Pagamento</label>
+                    <input type="date" id="marcarData" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Pagamento -->
+    <div class="modal-overlay" id="modalEditarPagamento">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Editar Pagamento</h3>
+                <button class="btn-close" data-fechar-modal>&times;</button>
+            </div>
+            <form id="formEditarPagamento">
+                <input type="hidden" id="editarPagId">
+                <div class="form-group">
+                    <label for="editarDescricao">Descrição</label>
+                    <input type="text" id="editarDescricao" required>
+                </div>
+                <div class="form-group">
+                    <label for="editarVencimento">Vencimento</label>
+                    <input type="date" id="editarVencimento">
+                </div>
+                <div class="form-group">
+                    <label for="editarValorProjetado">Valor Projetado</label>
+                    <input type="text" id="editarValorProjetado" inputmode="decimal" placeholder="0,00">
+                </div>
+                <div class="form-group">
+                    <label for="editarValorPago">Valor Pago</label>
+                    <input type="text" id="editarValorPago" inputmode="decimal" placeholder="0,00">
+                </div>
+                <div class="form-group">
+                    <label for="editarDataPagamento">Data do Pagamento</label>
+                    <input type="date" id="editarDataPagamento">
+                </div>
+                <div class="form-group">
+                    <label for="editarINCC">INCC / Juros de Obra</label>
+                    <input type="text" id="editarINCC" inputmode="decimal" placeholder="0,00">
+                </div>
+                <div class="form-group">
+                    <label for="editarCategoria">Categoria</label>
+                    <select id="editarCategoria">
+                        <option value="parcela">Parcela</option>
+                        <option value="sinal">Sinal</option>
+                        <option value="balao">Balão</option>
+                        <option value="juros">Juros de Obra</option>
+                        <option value="financiamento">Financiamento</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editarStatus">Status</label>
+                    <select id="editarStatus">
+                        <option value="pago">Pago</option>
+                        <option value="pendente">Pendente</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="data/dados-iniciais.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/calculos.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/app.js"></script>
     <script src="js/pagamentos.js"></script>
 </body>

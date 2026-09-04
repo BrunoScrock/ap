@@ -32,13 +32,19 @@ function renderEconomias() {
                     <td>${Utils.escapeHTML(e.observacao || '')}</td>
                 </tr>
             `).join('')
-            : `<tr><td colspan="3" class="text-center">Nenhum valor guardado</td></tr>`;
+            : `<tr><td colspan="3" class="empty-state">Nenhum valor guardado ainda.</td></tr>`;
     }
 
     // Grid de itens
     if (grid) {
         if (!itens.length) {
-            grid.innerHTML = '<p class="text-secondary">Nenhum item cadastrado. Clique em "+ Novo Item" para adicionar.</p>';
+            grid.innerHTML = `
+                <div class="empty-state empty-state-grid">
+                    <p class="empty-icon">🛋️</p>
+                    <p class="empty-title">Nenhum item cadastrado</p>
+                    <p class="empty-text">Cadastre itens do enxoval (ex.: sofá, geladeira) para acompanhar o progresso das compras.</p>
+                </div>
+            `;
         } else {
             grid.innerHTML = itens.map(item => {
                 const percent = Calculos.percentualItem(item);
@@ -75,6 +81,13 @@ function configurarFormularios() {
     const btnNovoItem = document.getElementById('btnNovoItem');
     const formItem = document.getElementById('formItem');
 
+    // Máscara de moeda nos campos monetários
+    ['ecoValor', 'itemValorEstimado', 'itemValorGuardado']
+        .forEach(id => {
+            const el = document.getElementById(id);
+            if (el) Utils.aplicarMascaraMoeda(el);
+        });
+
     if (btnNovaEconomia) {
         btnNovaEconomia.addEventListener('click', () => {
             document.getElementById('ecoData').value = Utils.hojeISO();
@@ -86,7 +99,7 @@ function configurarFormularios() {
     if (formEconomia) {
         formEconomia.addEventListener('submit', (e) => {
             e.preventDefault();
-            const valor = parseFloat(document.getElementById('ecoValor').value);
+            const valor = Utils.moedaParaNumero(document.getElementById('ecoValor').value);
             const data = document.getElementById('ecoData').value;
             const observacao = document.getElementById('ecoObservacao').value.trim();
 
@@ -115,8 +128,8 @@ function configurarFormularios() {
         formItem.addEventListener('submit', (e) => {
             e.preventDefault();
             const nome = document.getElementById('itemNome').value.trim();
-            const valorEstimado = parseFloat(document.getElementById('itemValorEstimado').value);
-            const valorGuardado = parseFloat(document.getElementById('itemValorGuardado').value || '0');
+            const valorEstimado = Utils.moedaParaNumero(document.getElementById('itemValorEstimado').value);
+            const valorGuardado = Utils.moedaParaNumero(document.getElementById('itemValorGuardado').value);
             const status = document.getElementById('itemStatus').value;
 
             if (!nome || !valorEstimado) return;

@@ -35,7 +35,7 @@ function configurarEventos() {
         btnPrevArq.addEventListener('click', () => {
             const arquivo = inputArquivo.files && inputArquivo.files[0];
             if (!arquivo) {
-                alert('Selecione um arquivo primeiro.');
+                Toast.warning('Selecione um arquivo primeiro.');
                 return;
             }
             const leitor = new FileReader();
@@ -44,7 +44,7 @@ function configurarEventos() {
                 const pagamentos = Importacao.parseArquivoHTML(arquivoCarregado);
                 mostrarPreview(pagamentos);
             };
-            leitor.onerror = () => alert('Erro ao ler o arquivo.');
+            leitor.onerror = () => Toast.error('Erro ao ler o arquivo.');
             leitor.readAsText(arquivo);
         });
     }
@@ -58,16 +58,16 @@ function configurarEventos() {
     if (btnConfirmar) {
         btnConfirmar.addEventListener('click', () => {
             if (!dadosParaImportar.length) {
-                alert('Nenhum dado para importar.');
+                Toast.warning('Nenhum dado para importar.');
                 return;
             }
             const importados = Importacao.importar(dadosParaImportar);
             if (importados > 0) {
-                alert(`${importados} parcela(s) importada(s) com sucesso!`);
+                Toast.success(`${importados} parcela(s) importada(s) com sucesso!`);
                 limparPreview();
                 document.getElementById('importTextarea').value = '';
             } else {
-                alert('Nenhuma parcela foi importada.');
+                Toast.warning('Nenhuma parcela foi importada.');
             }
         });
     }
@@ -79,7 +79,7 @@ function mostrarPreview(pagamentos) {
     const badge = document.getElementById('previewBadge');
 
     if (!pagamentos.length) {
-        alert('Nenhuma parcela reconhecida. Verifique se o formato colado corresponde à tabela.');
+        Toast.warning('Nenhuma parcela reconhecida. Verifique se o formato colado corresponde à tabela.');
         return;
     }
 

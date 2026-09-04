@@ -104,11 +104,11 @@
                     <div class="gastos-container">
                         <div class="form-group">
                             <label for="limiteGastos">Limite Disponível</label>
-                            <input type="number" id="limiteGastos" step="0.01" min="0">
+                            <input type="text" id="limiteGastos" inputmode="decimal" placeholder="0,00">
                         </div>
                         <div class="form-group">
                             <label for="gastosRealizados">Gastos Realizados</label>
-                            <input type="number" id="gastosRealizados" step="0.01" min="0">
+                            <input type="text" id="gastosRealizados" inputmode="decimal" placeholder="0,00">
                         </div>
                         <div class="budget-status" id="statusOrcamento"></div>
                     </div>
@@ -189,27 +189,27 @@
             <form id="formSalario">
                 <div class="form-group">
                     <label for="salarioInput">Salário</label>
-                    <input type="number" id="salarioInput" step="0.01" min="0" required>
+                    <input type="text" id="salarioInput" inputmode="decimal" placeholder="0,00" required>
                 </div>
                 <div class="form-group">
                     <label for="reembolsoInput">Reembolso</label>
-                    <input type="number" id="reembolsoInput" step="0.01" min="0" value="0">
+                    <input type="text" id="reembolsoInput" inputmode="decimal" placeholder="0,00">
                 </div>
                 <div class="form-group">
                     <label for="divisaoApartamentoInput">Destino ao Apartamento</label>
-                    <input type="number" id="divisaoApartamentoInput" step="0.01" min="0" value="0">
+                    <input type="text" id="divisaoApartamentoInput" inputmode="decimal" placeholder="0,00">
                 </div>
                 <div class="form-group">
                     <label for="economiaInput">Destino à Economia</label>
-                    <input type="number" id="economiaInput" step="0.01" min="0" value="0">
+                    <input type="text" id="economiaInput" inputmode="decimal" placeholder="0,00">
                 </div>
                 <div class="form-group">
                     <label for="gastosFixosInput">Gastos Fixos</label>
-                    <input type="number" id="gastosFixosInput" step="0.01" min="0" value="0">
+                    <input type="text" id="gastosFixosInput" inputmode="decimal" placeholder="0,00">
                 </div>
                 <div class="form-group">
                     <label for="gastosVariaveisInput">Gastos Variáveis</label>
-                    <input type="number" id="gastosVariaveisInput" step="0.01" min="0" value="0">
+                    <input type="text" id="gastosVariaveisInput" inputmode="decimal" placeholder="0,00">
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
@@ -223,6 +223,7 @@
     <script src="js/utils.js"></script>
     <script src="js/calculos.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/app.js"></script>
     <script src="js/mensal.js"></script>
 </body>

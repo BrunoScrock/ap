@@ -37,11 +37,12 @@
 
         <main class="app-main">
             <section class="page-content active" id="page-dashboard">
-                <div class="page-heading">
+                <div class="page-hero">
                     <h2>Dashboard &amp; Resumo Geral</h2>
+                    <p>Acompanhe o progresso do seu investimento no apartamento 1409.</p>
                 </div>
 
-                <div class="cards-grid">
+                <div class="cards-grid stat-grid">
                     <div class="card card-stat" data-accent="primary">
                         <div class="card-label">Valor Total (Contrato)</div>
                         <div class="card-value" id="valorTotal">R$ 0,00</div>
@@ -60,7 +61,7 @@
                     </div>
                 </div>
 
-                <div class="cards-grid">
+                <div class="cards-grid stat-grid-2">
                     <div class="card card-stat" data-accent="green">
                         <div class="card-label">Total Guardado</div>
                         <div class="card-value" id="totalGuardado">R$ 0,00</div>
@@ -83,6 +84,7 @@
                         <span>de</span>
                         <span id="valorTotalInfo">R$ 0,00</span>
                     </div>
+                    <div class="resumo-rapido" id="resumoRapido"></div>
                 </div>
 
                 <div class="chart-grid">
@@ -146,6 +148,7 @@
     <script src="js/utils.js"></script>
     <script src="js/calculos.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/app.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

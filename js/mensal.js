@@ -180,7 +180,13 @@ function renderCartoes(mes) {
     if (!grid) return;
 
     if (!mes.cartoesCredito || mes.cartoesCredito.length === 0) {
-        grid.innerHTML = '<p class="text-secondary" style="color:var(--text-secondary)">Nenhum cartão de crédito registrado.</p>';
+        grid.innerHTML = `
+            <div class="empty-state">
+                <p class="empty-icon">💳</p>
+                <p class="empty-title">Nenhum cartão de crédito</p>
+                <p class="empty-text">Os cartões aparecerão aqui quando cadastrados.</p>
+            </div>
+        `;
         return;
     }
 
@@ -212,7 +218,7 @@ function renderDebitos(mes) {
                 <td class="text-right">${Utils.formatarMoeda(d.valor)}</td>
             </tr>
         `).join('')
-        : '<tr><td colspan="2" class="text-center">Nenhum débito automático</td></tr>';
+        : `<tr><td colspan="2" class="empty-state">Sem débitos automáticos neste mês.</td></tr>`;
 }
 
 function renderControleGastos(mes) {
@@ -224,10 +230,10 @@ function renderControleGastos(mes) {
     const gastos = mes.gastosRealizados || 0;
 
     if (limiteInput) {
-        limiteInput.value = limite || '';
+        limiteInput.value = Utils.paraMoedaInput(limite);
     }
     if (gastosInput) {
-        gastosInput.value = gastos || '';
+        gastosInput.value = Utils.paraMoedaInput(gastos);
     }
 
     if (statusEl) {
@@ -272,10 +278,21 @@ function renderHistorico() {
                 <td class="text-right">${Utils.formatarMoeda(Calculos.totalDespesas(m))}</td>
             </tr>
         `).join('')
-        : '<tr><td colspan="5" class="text-center">Nenhum mês cadastrado</td></tr>';
+        : '<tr><td colspan="5" class="empty-state">Nenhum mês cadastrado ainda.</td></tr>';
 }
 
 function configurarEventos() {
+    // Máscara de moeda nos campos monetários
+    const camposMoeda = [
+        'limiteGastos', 'gastosRealizados',
+        'salarioInput', 'reembolsoInput', 'divisaoApartamentoInput',
+        'economiaInput', 'gastosFixosInput', 'gastosVariaveisInput'
+    ];
+    camposMoeda.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) Utils.aplicarMascaraMoeda(el);
+    });
+
     // Navegação entre meses
     const btnAnterior = document.getElementById('btnMesAnterior');
     const btnProximo = document.getElementById('btnMesProximo');
@@ -297,12 +314,12 @@ function configurarEventos() {
     if (btnEditar) {
         btnEditar.addEventListener('click', () => {
             const mes = obterOuCriarMes();
-            document.getElementById('salarioInput').value = mes.salario || '';
-            document.getElementById('reembolsoInput').value = mes.reembolso || '';
-            document.getElementById('divisaoApartamentoInput').value = mes.divisaoApartamento || '';
-            document.getElementById('economiaInput').value = mes.economia || '';
-            document.getElementById('gastosFixosInput').value = mes.gastosFixos || '';
-            document.getElementById('gastosVariaveisInput').value = mes.gastosVariaveis || '';
+            document.getElementById('salarioInput').value = Utils.paraMoedaInput(mes.salario);
+            document.getElementById('reembolsoInput').value = Utils.paraMoedaInput(mes.reembolso);
+            document.getElementById('divisaoApartamentoInput').value = Utils.paraMoedaInput(mes.divisaoApartamento);
+            document.getElementById('economiaInput').value = Utils.paraMoedaInput(mes.economia);
+            document.getElementById('gastosFixosInput').value = Utils.paraMoedaInput(mes.gastosFixos);
+            document.getElementById('gastosVariaveisInput').value = Utils.paraMoedaInput(mes.gastosVariaveis);
             window.App.abrirModal('modalSalario');
         });
     }
@@ -313,12 +330,12 @@ function configurarEventos() {
             e.preventDefault();
             const mes = obterOuCriarMes();
 
-            mes.salario = parseFloat(document.getElementById('salarioInput').value) || 0;
-            mes.reembolso = parseFloat(document.getElementById('reembolsoInput').value) || 0;
-            mes.divisaoApartamento = parseFloat(document.getElementById('divisaoApartamentoInput').value) || 0;
-            mes.economia = parseFloat(document.getElementById('economiaInput').value) || 0;
-            mes.gastosFixos = parseFloat(document.getElementById('gastosFixosInput').value) || 0;
-            mes.gastosVariaveis = parseFloat(document.getElementById('gastosVariaveisInput').value) || 0;
+            mes.salario = Utils.moedaParaNumero(document.getElementById('salarioInput').value);
+            mes.reembolso = Utils.moedaParaNumero(document.getElementById('reembolsoInput').value);
+            mes.divisaoApartamento = Utils.moedaParaNumero(document.getElementById('divisaoApartamentoInput').value);
+            mes.economia = Utils.moedaParaNumero(document.getElementById('economiaInput').value);
+            mes.gastosFixos = Utils.moedaParaNumero(document.getElementById('gastosFixosInput').value);
+            mes.gastosVariaveis = Utils.moedaParaNumero(document.getElementById('gastosVariaveisInput').value);
             mes.gastosPessoaisDisponiveis = Calculos.gastosPessoaisDisponiveis(mes);
 
             Storage.salvarMes(mes);
@@ -333,8 +350,8 @@ function configurarEventos() {
 
     const salvarGastos = () => {
         const mes = obterOuCriarMes();
-        mes.gastosPessoaisDisponiveis = parseFloat(limiteInput.value) || 0;
-        mes.gastosRealizados = parseFloat(gastosInput.value) || 0;
+        mes.gastosPessoaisDisponiveis = Utils.moedaParaNumero(limiteInput.value);
+        mes.gastosRealizados = Utils.moedaParaNumero(gastosInput.value);
         Storage.salvarMes(mes);
         renderMes();
     };

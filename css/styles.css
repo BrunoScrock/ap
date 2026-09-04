@@ -624,6 +624,81 @@ a.btn {
     border-radius: 999px;
     font-size: 11px;
     font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Ações da tabela (marcar pago / editar / excluir) */
+.acoes-cell {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.btn-acoes {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--border);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-acoes:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+.btn-acoes.btn-marcar-pago:hover {
+    background-color: var(--success);
+    color: #ffffff;
+}
+
+.btn-acoes.btn-excluir:hover {
+    background-color: var(--danger);
+    color: #ffffff;
+}
+
+.form-static {
+    padding: 10px 12px;
+    background-color: var(--bg);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Estados vazios */
+.empty-state {
+    text-align: center;
+    padding: 40px 16px !important;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    opacity: 0.6;
+}
+
+.empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.empty-text {
+    font-size: 13px;
+}
+
+/* Empty state dentro de grids: ocupa toda a largura */
+.empty-state-grid {
+    grid-column: 1 / -1;
 }
 
 .status-pago {
@@ -925,3 +1000,84 @@ a.btn {
 /* Text utilities */
 .mt-16 { margin-top: 16px; }
 .mb-16 { margin-bottom: 16px; }
+
+/* ==========================================
+   TOAST - Notificações
+   ========================================== */
+
+.toast-container {
+    position: fixed;
+    top: 84px;
+    right: 16px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 340px;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-card);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+    border-left: 4px solid var(--primary);
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: auto;
+    max-width: 100%;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.toast-success { border-left-color: var(--success); }
+.toast.toast-error { border-left-color: var(--danger); }
+.toast.toast-warning { border-left-color: var(--warning); }
+.toast.toast-info { border-left-color: var(--primary); }
+
+.toast-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+}
+
+.toast-message {
+    flex: 1;
+    word-break: break-word;
+}
+
+.toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+
+.toast-close:hover {
+    color: var(--text);
+}
+
+/* Posicionamento em telas pequenas */
+@media (max-width: 480px) {
+    .toast-container {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+    }
+}
