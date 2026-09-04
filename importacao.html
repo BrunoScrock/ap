@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Garden — Dashboard</title>
+    <title>New Garden — Importação de Dados</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/economias.css">
+    <link rel="stylesheet" href="css/importacao.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -36,70 +37,74 @@
         </header>
 
         <main class="app-main">
-            <section class="page-content active" id="page-dashboard">
+            <section class="page-content active" id="page-importacao">
                 <div class="page-heading">
-                    <h2>Dashboard &amp; Resumo Geral</h2>
+                    <h2>Importação de Dados</h2>
+                    <p class="text-secondary">Importe a tabela de parcelas do contrato diretamente da planilha.</p>
                 </div>
 
-                <div class="cards-grid">
-                    <div class="card card-stat" data-accent="primary">
-                        <div class="card-label">Valor Total (Contrato)</div>
-                        <div class="card-value" id="valorTotal">R$ 0,00</div>
+                <div class="card">
+                    <div class="card-title-row">
+                        <div class="card-title">Importar Parcelas do Contrato</div>
                     </div>
-                    <div class="card card-stat" data-accent="success">
-                        <div class="card-label">Total Pago</div>
-                        <div class="card-value" id="totalPago">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="danger">
-                        <div class="card-label">Saldo Devedor</div>
-                        <div class="card-value" id="saldoDevedor">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="warning">
-                        <div class="card-label">Progresso Quitação</div>
-                        <div class="card-value" id="progressoQuitacao">0%</div>
-                    </div>
-                </div>
 
-                <div class="cards-grid">
-                    <div class="card card-stat" data-accent="green">
-                        <div class="card-label">Total Guardado</div>
-                        <div class="card-value" id="totalGuardado">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="yellow">
-                        <div class="card-label">Data de Entrega</div>
-                        <div class="card-value" id="dataEntrega">—</div>
-                    </div>
-                </div>
-
-                <div class="card progress-card">
-                    <div class="card-title">Progresso de Quitação</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBarAtivo">
-                            <span>0%</span>
+                    <div class="form-step">
+                        <h4>Opção 1 — Colar os dados da planilha</h4>
+                        <p class="text-secondary">Abra a aba <strong>Pagamentos</strong> no Google Sheets, selecione as linhas da tabela (da linha com título "Ref." até a última parcela), copie e cole abaixo.</p>
+                        <textarea id="importTextarea" class="import-textarea" rows="10"
+                            placeholder="Cole aqui os dados copiados da planilha. Cada linha deve ter as colunas separadas por TAB:
+Ref.  Descrição     Vencimento   Valor Projetado  Valor Pago  Data  INCC  Status
+1     Sinal de Neg. 18/05/2026   R$ 6.999,97      R$ 6.999,97  ...  ...  PAGO">
+                        </textarea>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="btnLimparColar">Limpar</button>
+                            <button type="button" class="btn btn-primary" id="btnPrevisualizarColar">Pré-visualizar</button>
                         </div>
                     </div>
-                    <div class="progress-info">
-                        <span id="valorPagoInfo">R$ 0,00</span>
-                        <span>de</span>
-                        <span id="valorTotalInfo">R$ 0,00</span>
+
+                    <div class="form-step">
+                        <h4>Opção 2 — Carregar arquivo HTML exportado</h4>
+                        <p class="text-secondary">Se você exportou a aba <strong>Pagamentos</strong> como HTML (via Google Sheets → Arquivo → Partilhar → Publicar na web, ou arquivo exportado), selecione o arquivo abaixo.</p>
+                        <div class="form-group">
+                            <input type="file" id="importArquivo" accept=".html,.htm,.txt" class="import-file">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" id="btnPrevisualizarArquivo">Pré-visualizar</button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="chart-grid">
-                    <div class="card chart-card">
-                        <div class="card-title">Financiamento</div>
-                        <canvas id="chartPagoDevedor"></canvas>
+                <div class="card" id="previewCard" hidden>
+                    <div class="card-title-row">
+                        <div class="card-title">Pré-visualização</div>
+                        <span class="badge" id="previewBadge"></span>
                     </div>
-                    <div class="card chart-card">
-                        <div class="card-title">Total Pago por Mês</div>
-                        <canvas id="chartPagamentosMes"></canvas>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="tabelaPreview">
+                            <thead>
+                                <tr>
+                                    <th>Ref.</th>
+                                    <th>Descrição</th>
+                                    <th>Vencimento</th>
+                                    <th>Valor Projetado</th>
+                                    <th>Valor Pago</th>
+                                    <th>INCC</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoPreview"></tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" id="btnCancelarImportacao">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btnConfirmarImportacao">Confirmar Importação</button>
                     </div>
                 </div>
             </section>
         </main>
 
         <nav class="bottom-nav">
-            <a href="index.html" class="nav-item active">
+            <a href="index.html" class="nav-item">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="7" height="9"/>
                     <rect x="14" y="3" width="7" height="5"/>
@@ -131,7 +136,7 @@
                 </svg>
                 <span>Mensal</span>
             </a>
-            <a href="importacao.html" class="nav-item">
+            <a href="importacao.html" class="nav-item active">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                     <polyline points="17 8 12 3 7 8"/>
@@ -146,7 +151,8 @@
     <script src="js/utils.js"></script>
     <script src="js/calculos.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/importacao.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="js/importacao-ui.js"></script>
 </body>
 </html>

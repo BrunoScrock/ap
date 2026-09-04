@@ -411,6 +411,19 @@ body {
     color: #ffffff;
 }
 
+a.btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .btn-full {
     width: 100%;
 }

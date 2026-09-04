@@ -71,7 +71,10 @@
                 <div class="card">
                     <div class="card-title-row">
                         <div class="card-title">Parcelas</div>
-                        <button class="btn btn-primary" id="btnNovoPagamento">+ Novo Pagamento</button>
+                        <div class="btn-group">
+                            <a href="importacao.html" class="btn btn-secondary">Importar</a>
+                            <button class="btn btn-primary" id="btnNovoPagamento">+ Novo Pagamento</button>
+                        </div>
                     </div>
                     <div class="table-wrapper">
                         <table class="data-table" id="tabelaPagamentos">
@@ -127,6 +130,14 @@
                     <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
                 <span>Mensal</span>
+            </a>
+            <a href="importacao.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Importar</span>
             </a>
         </nav>
     </div>
