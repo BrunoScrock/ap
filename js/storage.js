@@ -128,9 +128,12 @@ const Storage = {
     },
 
     _ler(k, fallback) {
-        if (this._cache && k in this._cache) return this._cache[k];
+        if (this._cache && k in this._cache) {
+            const v = this._cache[k];
+            if (v !== null && v !== undefined) return v;
+        }
         const salvo = this._lerLocal(k);
-        return salvo !== null ? salvo : fallback;
+        return salvo !== null && salvo !== undefined ? salvo : fallback;
     },
 
     _escrever(k, v) {
@@ -167,7 +170,11 @@ const Storage = {
         if (!this._supabase || !this._logado) return 0;
         let total = 0;
         for (const k of this.COLECOES()) {
-            const v = this._lerLocal(k);
+            let v = this._lerLocal(k);
+            if (v === null || v === undefined) {
+                const seed = window.DADOS_INICIAIS && DADOS_INICIAIS[k];
+                v = Array.isArray(seed) ? seed.slice() : (seed ? { ...seed } : null);
+            }
             if (v == null) continue;
             const { error } = await this._supabase
                 .from(SUPABASE_CONFIG.tabela)
