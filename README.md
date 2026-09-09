@@ -131,11 +131,24 @@ GitHub Pages, sem custo e sem servidor.
 3. A Vercel detecta automaticamente projeto estático (sem build)
 4. O deploy é automático a cada `push`
 
+## Autenticação (login com Google)
+
+O acesso à interface é restrito a um login com conta Google. Só os e-mails
+cadastrados em `js/auth-config.js` (lista `emailsPermitidos`) conseguem entrar;
+os demais veem "Acesso negado".
+
+- **Client ID:** configurado em `js/auth-config.js` (criado no Google Cloud Console → Credentials → OAuth client ID → Web application).
+- **Origem autorizada no Google:** `https://brunoscrock.github.io`
+- Para permitir/remover alguém, edite `emailsPermitidos` em `js/auth-config.js` e envie novamente (push).
+
+> ⚠️ **Limitação:** o login protege a *interface*, mas os arquivos do repositório
+> continuam públicos (GitHub Pages). A restrição é feita no navegador (client-side).
+
 ## Segurança
 
 - Os dados são armazenados apenas localmente no navegador (LocalStorage)
 - Nenhum dado é enviado para servidores externos
-- O sistema não requer autenticação (uso pessoal/local)
+- Acesso à interface restrito por login com Google (`js/auth-config.js`)
 
 ## Observação
 

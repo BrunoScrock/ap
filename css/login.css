@@ -1,0 +1,99 @@
+/* ==========================================
+   AUTENTICACAO - Tela de login (gate)
+   ========================================== */
+
+.auth-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(1200px 600px at 50% -10%, var(--primary-light), transparent 60%),
+        linear-gradient(160deg, var(--primary-dark), var(--bg) 120%);
+}
+
+.auth-gate[hidden] {
+    display: none;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 32px 28px;
+    text-align: center;
+    color: var(--text);
+}
+
+.auth-logo {
+    margin-bottom: 16px;
+}
+
+.auth-logo .logo-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+    border-radius: 14px;
+    margin: 0 auto;
+}
+
+.auth-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.auth-text {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 16px 0 20px;
+}
+
+.auth-button-area {
+    min-height: 44px;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-erro {
+    margin-top: 14px;
+    background: rgba(185, 28, 28, 0.12);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.auth-erro[hidden] {
+    display: none;
+}
+
+.btn-sair {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-sair:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
