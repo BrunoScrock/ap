@@ -131,24 +131,40 @@ GitHub Pages, sem custo e sem servidor.
 3. A Vercel detecta automaticamente projeto estático (sem build)
 4. O deploy é automático a cada `push`
 
-## Autenticação (login com Google)
+## Autenticação (login com Google via Supabase)
 
 O acesso à interface é restrito a um login com conta Google. Só os e-mails
 cadastrados em `js/auth-config.js` (lista `emailsPermitidos`) conseguem entrar;
 os demais veem "Acesso negado".
 
-- **Client ID:** configurado em `js/auth-config.js` (criado no Google Cloud Console → Credentials → OAuth client ID → Web application).
-- **Origem autorizada no Google:** `https://brunoscrock.github.io`
+- **Client ID / Secret do Google:** configurados no painel do Supabase (Authentication → Providers → Google), criados no Google Cloud Console → Credentials → OAuth client ID → Web application.
+- **Callback URL do Supabase:** `https://<seu-projeto>.supabase.co/auth/v1/callback`
+- **URL e chave anon do projeto:** preencha `SUPABASE_CONFIG` em `js/auth-config.js`.
 - Para permitir/remover alguém, edite `emailsPermitidos` em `js/auth-config.js` e envie novamente (push).
 
-> ⚠️ **Limitação:** o login protege a *interface*, mas os arquivos do repositório
-> continuam públicos (GitHub Pages). A restrição é feita no navegador (client-side).
+## Dados (Supabase + LocalStorage)
+
+Os dados são leitura-escrita em três camadas: cache em memória → LocalStorage →
+tabela `app_data` no Supabase (sincronização automática, sempre que o usuário está
+logado). Assim os dois moradores compartilham os mesmos dados em qualquer
+dispositivo, sem exportar/importar arquivos.
+
+- **Estrutura:** `supabase.sql` cria a tabela `app_data` (`id` text PK, `dados` jsonb, `atualizado_em`) com Row Level Security: somente os e-mails de `emailsPermitidos` podem ler/gravar (a restrição vale no servidor, não só no navegador).
+- **Configuração inicial (uma única vez):**
+  1. Crie um projeto em [supabase.com](https://supabase.com).
+  2. Abra **SQL Editor** e execute o conteúdo de `supabase.sql`.
+  3. Em **Authentication → Providers**, habilite **Google** com o Client ID/Secret (mesmo client OAuth do Cloud Console).
+  4. Em **Project Settings → API**, copie a URL do projeto e a chave `anon` (pública) para `SUPABASE_CONFIG` em `js/auth-config.js` e envie (push).
+- **Migração dos dados do navegador:** após o primeiro login, se a nuvem estiver vazia e houver dados salvos no navegador, o sistema mostra um aviso com o botão **"Enviar dados para a nuvem"** (uma única vez).
+
+> ⚠️ Enquanto `SUPABASE_CONFIG` não estiver preenchido, o sistema funciona apenas
+> com dados locais e mostra "Serviço de login ainda não configurado".
 
 ## Segurança
 
-- Os dados são armazenados apenas localmente no navegador (LocalStorage)
-- Nenhum dado é enviado para servidores externos
-- Acesso à interface restrito por login com Google (`js/auth-config.js`)
+- Dados guardados em conta Supabase com RLS restrito aos e-mails autorizados (server-side).
+- Acesso à interface restrito por login com Google (`js/auth-config.js`).
+- A chave `anon` é pública por projeto (segura à frente da RLS); nunca use a `service_role`.
 
 ## Observação
 

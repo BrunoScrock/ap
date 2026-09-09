@@ -2,7 +2,7 @@
    APP - Lógica principal e tema
    ========================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const App = {
         iniciar() {
             this.configurarTema();
@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     App.iniciar();
     window.App = App;
+
+    await Storage.preparar();
 
     if (typeof iniciarPagina === 'function') {
         iniciarPagina();

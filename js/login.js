@@ -1,92 +1,116 @@
 /* ==========================================
-   AUTENTICACAO - Login com conta Google
+   AUTENTICACAO - Login com conta Google (Supabase Auth)
    Restringe o acesso da interface aos e-mails
    permitidos em AUTH_CONFIG.emailsPermitidos.
+   A nuvem (Supabase) tambem bloqueia no servidor
+   via Row Level Security (supabase.sql).
    ========================================== */
 
 const Auth = {
+    usuario: '',
     config: AUTH_CONFIG,
 
     estaAutenticado() {
-        return !!localStorage.getItem(this.config.chaveSessao);
+        return !!this.usuario;
     },
 
-    iniciar() {
-        this.aplicarModo();
-        this.inicializarGIS();
-    },
+    async iniciar() {
+        await Storage.preparar();
+        this.configurarBotaoGoogle();
+        this.configurarBotaoSair();
 
-    aplicarModo() {
-        const gate = document.getElementById('authGate');
-        if (gate) gate.hidden = this.estaAutenticado();
-        if (this.estaAutenticado()) {
-            this.adicionarBotaoSair();
-        }
-    },
-
-    inicializarGIS() {
-        if (window.google && google.accounts && google.accounts.id) {
-            this.iniciarGoogle();
-        } else {
-            window.onGoogleLibraryLoad = () => this.iniciarGoogle();
-        }
-    },
-
-    iniciarGoogle() {
-        google.accounts.id.initialize({
-            client_id: this.config.clientId,
-            callback: (resposta) => this.handleCredentialResponse(resposta),
-            auto_select: false,
-            ux_mode: 'popup'
-        });
-        const area = document.getElementById('gsi-button-area');
-        if (area) {
-            google.accounts.id.renderButton(area, {
-                theme: 'outline',
-                size: 'large',
-                shape: 'pill',
-                text: 'continue_with',
-                width: 280
-            });
-        }
-    },
-
-    handleCredentialResponse(resposta) {
-        const payload = this.decodificarJWT(resposta ? resposta.credential : '');
-        if (!payload || !payload.email) {
-            this.mostrarErro('Nao foi possivel validar o login. Tente novamente.');
+        if (!window.supabase || !Storage._supabase) {
+            this.mostrarErro('Servico de login ainda nao configurado.');
+            this.aplicarModo(false);
             return;
         }
-        const email = String(payload.email).toLowerCase().trim();
-        const permitido = this.config.emailsPermitidos.some(
-            e => String(e).toLowerCase().trim() === email
-        );
-        if (permitido) {
-            localStorage.setItem(this.config.chaveSessao, email);
-            this.mostrarErro('');
-            this.aplicarModo();
-            if (window.Toast) Toast.success('Bem-vindo(a), acesso liberado!');
+
+        try {
+            const { data: { user } } = await Storage._supabase.auth.getUser();
+            if (user && user.email) {
+                const email = String(user.email).toLowerCase().trim();
+                if (this.emailPermitido(email)) {
+                    this.usuario = email;
+                    Storage._logado = true;
+                    this.aplicarModo(true);
+                    this.verificarMigracao();
+                } else {
+                    this.mostrarErro('Acesso negado. Seu e-mail nao esta autorizado para este sistema.');
+                    this.aplicarModo(false);
+                    try {
+                        await Storage._supabase.auth.signOut();
+                    } catch (e) {}
+                }
+            } else {
+                this.aplicarModo(false);
+            }
+        } catch (erro) {
+            this.aplicarModo(false);
+        }
+    },
+
+    emailPermitido(email) {
+        return this.config.emailsPermitidos.some(e => String(e).toLowerCase().trim() === email);
+    },
+
+    aplicarModo(autenticado) {
+        const gate = document.getElementById('authGate');
+        if (gate) gate.hidden = autenticado;
+        const btnSair = document.getElementById('btnSair');
+        if (btnSair) btnSair.hidden = !autenticado;
+    },
+
+    configurarBotaoGoogle() {
+        const btn = document.getElementById('btnEntrarGoogle');
+        if (!btn) return;
+        btn.addEventListener('click', () => this.entrarGoogle());
+    },
+
+    configurarBotaoSair() {
+        const btn = document.getElementById('btnSair');
+        if (btn) {
+            btn.addEventListener('click', () => this.sair());
         } else {
-            this.mostrarErro('Acesso negado. Seu e-mail nao esta autorizado para este sistema.');
-            if (window.google && google.accounts && google.accounts.id) {
-                google.accounts.id.cancel();
+            const header = document.querySelector('.header-actions');
+            if (header) {
+                const novo = document.createElement('button');
+                novo.id = 'btnSair';
+                novo.className = 'btn-sair';
+                novo.title = 'Sair da conta';
+                novo.textContent = 'Sair';
+                novo.hidden = true;
+                novo.addEventListener('click', () => this.sair());
+                header.appendChild(novo);
             }
         }
     },
 
-    decodificarJWT(token) {
-        try {
-            const parte = String(token).split('.')[1] || '';
-            const base64 = parte.replace(/-/g, '+').replace(/_/g, '/');
-            const bytes = atob(base64);
-            const json = bytes
-                .split('')
-                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('');
-            return JSON.parse(decodeURIComponent(json));
-        } catch (erro) {
-            return null;
+    async entrarGoogle() {
+        this.mostrarErro('');
+        if (!Storage._supabase) {
+            this.mostrarErro('Servico de login ainda nao configurado.');
+            return;
         }
+        try {
+            const { error } = await Storage._supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: location.origin + location.pathname }
+            });
+            if (error) this.mostrarErro('Erro ao entrar com Google: ' + error.message);
+        } catch (erro) {
+            this.mostrarErro('Erro ao entrar com Google.');
+        }
+    },
+
+    async sair() {
+        try {
+            if (Storage._supabase) {
+                await Storage._supabase.auth.signOut();
+            }
+        } catch (e) {}
+        Storage._logado = false;
+        this.usuario = '';
+        location.reload();
     },
 
     mostrarErro(msg) {
@@ -96,25 +120,29 @@ const Auth = {
         el.hidden = !msg;
     },
 
-    adicionarBotaoSair() {
-        if (document.getElementById('btnSair')) return;
-        const header = document.querySelector('.header-actions');
-        if (!header) return;
-        const btn = document.createElement('button');
-        btn.id = 'btnSair';
-        btn.className = 'btn-sair';
-        btn.title = 'Sair da conta';
-        btn.textContent = 'Sair';
-        btn.addEventListener('click', () => this.sair());
-        header.appendChild(btn);
-    },
+    /**
+     * Se a nuvem esta vazia mas ha dados locais, oferece enviar
+     */
+    async verificarMigracao() {
+        const div = document.getElementById('migracaoBanner');
+        if (!div) return;
+        if (!Storage.haDadosParaMigrar()) return;
 
-    sair() {
-        localStorage.removeItem(this.config.chaveSessao);
-        if (window.google && google.accounts && google.accounts.id) {
-            google.accounts.id.disableAutoSelect();
+        div.hidden = false;
+        const btn = document.getElementById('btnMigrarDados');
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                btn.textContent = 'Enviando...';
+                const total = await Storage.enviarDadosLocaisParaNuvem();
+                if (total > 0 && window.Toast) {
+                    Toast.success('Dados enviados para a nuvem com sucesso!');
+                } else if (window.Toast) {
+                    Toast.error('Nada foi enviado.');
+                }
+                div.hidden = true;
+            });
         }
-        location.reload();
     }
 };
 
