@@ -118,7 +118,8 @@
     }
 
     .card-value {
-        font-size: 26px;
+        font-size: clamp(20px, 2.2vw, 22px);
+        letter-spacing: -0.3px;
     }
 }
 

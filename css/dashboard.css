@@ -45,6 +45,10 @@
 .card-stat {
     background: linear-gradient(160deg, var(--bg-card), color-mix(in srgb, var(--bg-card) 96%, var(--primary) 4%));
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100px;
 }
 
 .card-stat:hover {
@@ -58,6 +62,17 @@
     gap: 6px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+}
+
+.card-stat .card-value {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+    line-height: 1.1;
 }
 
 .card-value {
@@ -120,13 +135,16 @@
 }
 
 @media (min-width: 600px) {
-    .cards-grid.stat-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
     .cards-grid.stat-grid-2 {
         grid-template-columns: repeat(2, 1fr);
     }
     .resumo-rapido-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1000px) {
+    .cards-grid.stat-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
