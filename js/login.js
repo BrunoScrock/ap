@@ -21,13 +21,13 @@ const Auth = {
         // Mostra o gate imediatamente (evita flash do conteudo antes da checagem)
         this.aplicarModo(false);
 
+        // Inicializa o cliente Supabase e carrega dados (cache + nuvem se logado)
+        await Storage.preparar();
+
         if (!window.supabase || !Storage._supabase) {
             this.mostrarErro('Servico de login ainda nao configurado.');
             return;
         }
-
-        // Garante cache/dados prontos antes de checar a sessao
-        await Storage.preparar();
 
         try {
             const { data: { user } } = await Storage._supabase.auth.getUser();
