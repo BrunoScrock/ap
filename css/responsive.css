@@ -5,6 +5,11 @@
 /* Estilos base (mobile) já estão no styles.css.
    Aqui adaptamos para telas maiores. */
 
+/* Mobile: esconde a marcação lateral (fica so no desktop) */
+.nav-brand {
+    display: none;
+}
+
 /* Tablet (600px+) */
 @media (min-width: 600px) {
     .app-shell {
@@ -70,8 +75,34 @@
         margin-top: 8px;
     }
 
-    .bottom-nav .nav-item:first-child {
-        margin-top: 90px;
+    .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 8px 18px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand .logo-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .nav-brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .nav-brand-text strong {
+        font-size: 15px;
+        color: var(--text);
+    }
+
+    .nav-brand-text small {
+        font-size: 11px;
+        color: var(--text-secondary);
     }
 
     .nav-item.active {
@@ -131,5 +162,17 @@
 
     .items-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Acessibilidade: respeita quem prefere menos animacao */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

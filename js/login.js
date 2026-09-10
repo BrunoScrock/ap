@@ -8,6 +8,8 @@
 
 const Auth = {
     usuario: '',
+    nomeUsuario: '',
+    fotoUsuario: '',
     config: AUTH_CONFIG,
 
     estaAutenticado() {
@@ -35,7 +37,10 @@ const Auth = {
                 const email = String(user.email).toLowerCase().trim();
                 if (this.emailPermitido(email)) {
                     this.usuario = email;
+                    this.nomeUsuario = (user.user_metadata && user.user_metadata.name) || '';
+                    this.fotoUsuario = (user.user_metadata && user.user_metadata.avatar_url) || '';
                     Storage._logado = true;
+                    this.atualizarUsuario();
                     this.aplicarModo(true);
                     this.verificarMigracao();
                 } else {
@@ -63,8 +68,30 @@ const Auth = {
     aplicarModo(autenticado) {
         const gate = document.getElementById('authGate');
         if (gate) gate.hidden = autenticado;
-        const btnSair = document.getElementById('btnSair');
-        if (btnSair) btnSair.hidden = !autenticado;
+        const grupo = document.getElementById('usuarioBox');
+        if (grupo) {
+            grupo.hidden = !autenticado;
+        } else {
+            const btnSair = document.getElementById('btnSair');
+            if (btnSair) btnSair.hidden = !autenticado;
+        }
+    },
+
+    atualizarUsuario() {
+        const grupo = document.getElementById('usuarioBox');
+        if (!grupo) return;
+        const av = grupo.querySelector('.user-avatar');
+        const nomeEl = grupo.querySelector('.user-name');
+        const emailEl = grupo.querySelector('.user-email');
+        if (av) {
+            if (this.fotoUsuario) {
+                av.innerHTML = '<img src="' + this.fotoUsuario + '" alt="">';
+            } else {
+                av.textContent = (this.usuario.charAt(0) || '?').toUpperCase();
+            }
+        }
+        if (nomeEl) nomeEl.textContent = this.nomeUsuario || this.usuario;
+        if (emailEl) emailEl.textContent = this.usuario;
     },
 
     configurarBotaoGoogle() {
@@ -74,22 +101,47 @@ const Auth = {
     },
 
     configurarBotaoSair() {
-        const btn = document.getElementById('btnSair');
-        if (btn) {
-            btn.addEventListener('click', () => this.sair());
-        } else {
-            const header = document.querySelector('.header-actions');
-            if (header) {
-                const novo = document.createElement('button');
-                novo.id = 'btnSair';
-                novo.className = 'btn-sair';
-                novo.title = 'Sair da conta';
-                novo.textContent = 'Sair';
-                novo.hidden = true;
-                novo.addEventListener('click', () => this.sair());
-                header.appendChild(novo);
-            }
+        const existing = document.getElementById('btnSair');
+        if (existing) {
+            existing.addEventListener('click', () => this.sair());
+            return;
         }
+
+        const header = document.querySelector('.header-actions');
+        if (!header) return;
+
+        const grupo = document.createElement('div');
+        grupo.className = 'header-usuario';
+        grupo.id = 'usuarioBox';
+        grupo.hidden = true;
+
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'user-chip';
+        chip.title = 'Conta logada';
+
+        const avatar = document.createElement('span');
+        avatar.className = 'user-avatar';
+        const nomeEl = document.createElement('span');
+        nomeEl.className = 'user-name';
+        const emailEl = document.createElement('span');
+        emailEl.className = 'user-email';
+
+        chip.appendChild(avatar);
+        chip.appendChild(nomeEl);
+        chip.appendChild(emailEl);
+
+        const btn = document.createElement('button');
+        btn.id = 'btnSair';
+        btn.className = 'btn-sair';
+        btn.type = 'button';
+        btn.title = 'Sair da conta';
+        btn.textContent = 'Sair';
+        btn.addEventListener('click', () => this.sair());
+
+        grupo.appendChild(chip);
+        grupo.appendChild(btn);
+        header.appendChild(grupo);
     },
 
     async entrarGoogle() {
