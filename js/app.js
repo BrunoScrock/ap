@@ -88,9 +88,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     App.iniciar();
     window.App = App;
 
+    // 1) Autenticacao: gate no primeiro paint, nuvem e sessao verificadas
+    await Auth.iniciar();
+
+    // 2) Dados prontos (cache + nuvem se logado)
     await Storage.preparar();
 
-    if (typeof iniciarPagina === 'function') {
+    // 3) So renderiza a pagina se o e-mail estiver autorizado
+    if (Auth.estaAutenticado() && typeof iniciarPagina === 'function') {
         iniciarPagina();
     }
 });

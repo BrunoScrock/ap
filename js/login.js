@@ -15,15 +15,19 @@ const Auth = {
     },
 
     async iniciar() {
-        await Storage.preparar();
         this.configurarBotaoGoogle();
         this.configurarBotaoSair();
 
+        // Mostra o gate imediatamente (evita flash do conteudo antes da checagem)
+        this.aplicarModo(false);
+
         if (!window.supabase || !Storage._supabase) {
             this.mostrarErro('Servico de login ainda nao configurado.');
-            this.aplicarModo(false);
             return;
         }
+
+        // Garante cache/dados prontos antes de checar a sessao
+        await Storage.preparar();
 
         try {
             const { data: { user } } = await Storage._supabase.auth.getUser();
@@ -36,15 +40,18 @@ const Auth = {
                     this.verificarMigracao();
                 } else {
                     this.mostrarErro('Acesso negado. Seu e-mail nao esta autorizado para este sistema.');
+                    Storage._logado = false;
                     this.aplicarModo(false);
                     try {
                         await Storage._supabase.auth.signOut();
                     } catch (e) {}
                 }
             } else {
+                Storage._logado = false;
                 this.aplicarModo(false);
             }
         } catch (erro) {
+            Storage._logado = false;
             this.aplicarModo(false);
         }
     },
@@ -146,4 +153,5 @@ const Auth = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => Auth.iniciar());
+// A inicializacao da autenticacao e orquestrada pelo app.js
+// (Auth.iniciar() roda nele, ANTES de renderizar a pagina).
