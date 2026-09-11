@@ -91,7 +91,8 @@
                                 <tr>
                                     <th>Valor Guardado</th>
                                     <th>Data</th>
-                                    <th>Observação</th>
+                                    <th>Tipo</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="corpoTabelaEconomias">
@@ -159,10 +160,11 @@
     <div class="modal-overlay" id="modalEconomia">
         <div class="modal">
             <div class="modal-header">
-                <h3>Guardar Valor</h3>
+                <h3 id="modalEconomia-title">Guardar Valor</h3>
                 <button class="btn-close" data-fechar-modal>&times;</button>
             </div>
             <form id="formEconomia">
+                <input type="hidden" id="ecoId">
                 <div class="form-group">
                     <label for="ecoValor">Valor Guardado</label>
                     <input type="text" id="ecoValor" inputmode="decimal" placeholder="0,00" required>
@@ -172,8 +174,11 @@
                     <input type="date" id="ecoData" required>
                 </div>
                 <div class="form-group">
-                    <label for="ecoObservacao">Observação</label>
-                    <input type="text" id="ecoObservacao">
+                    <label for="ecoDestino">Tipo</label>
+                    <select id="ecoDestino">
+                        <option value="compras">Guardar dinheiro</option>
+                        <option value="pagamento-balao">Balão</option>
+                    </select>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
@@ -187,10 +192,11 @@
     <div class="modal-overlay" id="modalItem">
         <div class="modal">
             <div class="modal-header">
-                <h3>Novo Item para Compra</h3>
+                <h3 id="modalItem-title">Novo Item para Compra</h3>
                 <button class="btn-close" data-fechar-modal>&times;</button>
             </div>
             <form id="formItem">
+                <input type="hidden" id="itemId">
                 <div class="form-group">
                     <label for="itemNome">Nome do Item</label>
                     <input type="text" id="itemNome" required>
@@ -208,6 +214,7 @@
                     <select id="itemStatus">
                         <option value="em_andamento">Em andamento</option>
                         <option value="concluido">Concluído</option>
+                        <option value="comprado">Comprado</option>
                     </select>
                 </div>
                 <div class="form-actions">

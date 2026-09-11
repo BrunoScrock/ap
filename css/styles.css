@@ -1108,6 +1108,11 @@ a.btn {
     color: #11734b;
 }
 
+.item-status-badge.comprado {
+    background-color: #bcd9f7;
+    color: #1d4e89;
+}
+
 [data-theme="dark"] .item-status-badge.em_andamento {
     background-color: rgba(224, 168, 96, 0.2);
     color: #e0a860;
@@ -1116,6 +1121,11 @@ a.btn {
 [data-theme="dark"] .item-status-badge.concluido {
     background-color: rgba(45, 212, 167, 0.2);
     color: #2dd4a7;
+}
+
+[data-theme="dark"] .item-status-badge.comprado {
+    background-color: rgba(74, 143, 232, 0.25);
+    color: #5e97e0;
 }
 
 .item-values {

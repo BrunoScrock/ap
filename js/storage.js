@@ -264,6 +264,17 @@ const Storage = {
         this.setEconomias(economias);
     },
 
+    atualizarEconomia(id, dados) {
+        const economias = this.getEconomias();
+        const idx = economias.findIndex(e => String(e.id) === String(id));
+        if (idx !== -1) {
+            economias[idx] = { ...economias[idx], ...dados };
+            this.setEconomias(economias);
+            return economias[idx];
+        }
+        return null;
+    },
+
     /* ---------- Itens de compra ---------- */
 
     getItensCompra() {
@@ -285,6 +296,17 @@ const Storage = {
     removerItemCompra(id) {
         const itens = this.getItensCompra().filter(i => i.id !== id);
         this.setItensCompra(itens);
+    },
+
+    atualizarItemCompra(id, dados) {
+        const itens = this.getItensCompra();
+        const idx = itens.findIndex(i => String(i.id) === String(id));
+        if (idx !== -1) {
+            itens[idx] = { ...itens[idx], ...dados };
+            this.setItensCompra(itens);
+            return itens[idx];
+        }
+        return null;
     },
 
     /* ---------- Controle mensal ---------- */

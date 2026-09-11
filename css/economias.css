@@ -1,1 +1,90 @@
 /* Economias page specific styles */
+
+/* Ações dos cards de item */
+.item-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+}
+
+/* ==========================================
+   TABELA DE ECONOMIAS - MODO CARTÃO (celular)
+   ========================================== */
+
+@media (max-width: 599px) {
+    #tabelaEconomias.data-table {
+        min-width: 0;
+    }
+
+    #tabelaEconomias thead {
+        display: none;
+    }
+
+    #tabelaEconomias tbody,
+    #tabelaEconomias tbody tr,
+    #tabelaEconomias tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    #tabelaEconomias tbody tr {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 14px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    #tabelaEconomias tbody tr:nth-child(even),
+    #tabelaEconomias tbody tr:hover {
+        background-color: var(--bg-card);
+    }
+
+    #tabelaEconomias tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        border-bottom: 1px dashed var(--border);
+        white-space: normal;
+        text-align: right;
+    }
+
+    #tabelaEconomias tbody td:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+
+    #tabelaEconomias tbody td::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+    }
+
+    #tabelaEconomias td[data-label="Ações"]::before {
+        content: none;
+    }
+
+    #tabelaEconomias .acoes-cell {
+        justify-content: flex-end;
+    }
+
+    #tabelaEconomias td.empty-state {
+        display: block;
+        text-align: center;
+        padding: 24px 8px;
+    }
+
+    #tabelaEconomias td.empty-state::before {
+        content: none;
+    }
+}
