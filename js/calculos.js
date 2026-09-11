@@ -29,10 +29,17 @@ const Calculos = {
 
     /**
      * Calcula total de INCC/Juros de obra pagos
+     * @param {Array} pagamentos - Lista de pagamentos
+     * @param {Object} opcoes - Opções de filtro (ano)
      */
-    totalINCC(pagamentos) {
+    totalINCC(pagamentos, opcoes = {}) {
         return pagamentos
             .filter(p => p.status === 'pago')
+            .filter(p => {
+                if (!opcoes.ano) return true;
+                if (!p.dataPagamento) return false;
+                return Utils.obterAno(p.dataPagamento) === opcoes.ano;
+            })
             .reduce((soma, p) => soma + (p.inccJuros || 0), 0);
     },
 

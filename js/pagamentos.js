@@ -19,6 +19,7 @@ function renderPagamentos() {
     const totalPago = Calculos.totalPago(pagamentos);
     const totalPagoMes = Calculos.totalPago(pagamentos, { mes: mesAtual, ano: anoAtual });
     const totalPagoAno = Calculos.totalPago(pagamentos, { ano: anoAtual });
+    const totalINCCAno = Calculos.totalINCC(pagamentos, { ano: anoAtual });
     const qtdPagamentos = Calculos.quantidadePagamentos(pagamentos);
     const valorTotal = configuracoes.valorTotalApartamento || 0;
     const saldoDevedor = Calculos.saldoDevedor(valorTotal, pagamentos);
@@ -28,7 +29,7 @@ function renderPagamentos() {
     setTexto('totalPagoGeral', Utils.formatarMoeda(totalPago));
     setTexto('qtdPagamentos', String(qtdPagamentos));
     setTexto('totalPagoMes', Utils.formatarMoeda(totalPagoMes));
-    setTexto('totalPagoAno', Utils.formatarMoeda(totalPagoAno));
+    setTexto('totalPagoAno', Utils.formatarMoeda(totalPagoAno + totalINCCAno));
     setTexto('saldoDevedorPag', Utils.formatarMoeda(saldoDevedor));
     setTexto('percentualQuitacaoPag', `${percentual.toFixed(1)}%`);
 
@@ -80,15 +81,15 @@ function renderPagamentos() {
 
         return `
             <tr>
-                <td>${p.referencia || ''}</td>
-                <td>${Utils.escapeHTML(p.descricao)}</td>
-                <td>${Utils.formatarData(p.vencimento)}</td>
-                <td class="text-right">${Utils.formatarMoeda(p.valorProjetado)}</td>
-                <td class="text-right">${p.status === 'pago' ? Utils.formatarMoeda(p.valorPago) : '—'}</td>
-                <td>${Utils.formatarData(p.dataPagamento)}</td>
-                <td class="text-right">${p.status === 'pago' && p.inccJuros ? Utils.formatarMoeda(p.inccJuros) : '—'}</td>
-                <td><span class="status ${statusClass}">${p.status.toUpperCase()}</span></td>
-                <td>
+                <td data-label="Ref.">${p.referencia || ''}</td>
+                <td data-label="Descrição">${Utils.escapeHTML(p.descricao)}</td>
+                <td data-label="Vencimento">${Utils.formatarData(p.vencimento)}</td>
+                <td data-label="Valor Projetado" class="text-right">${Utils.formatarMoeda(p.valorProjetado)}</td>
+                <td data-label="Valor Pago" class="text-right">${p.status === 'pago' ? Utils.formatarMoeda(p.valorPago) : '—'}</td>
+                <td data-label="Data">${Utils.formatarData(p.dataPagamento)}</td>
+                <td data-label="INCC/Juros" class="text-right">${p.status === 'pago' && p.inccJuros ? Utils.formatarMoeda(p.inccJuros) : '—'}</td>
+                <td data-label="Status"><span class="status ${statusClass}">${p.status.toUpperCase()}</span></td>
+                <td data-label="Ações">
                     <div class="acoes-cell">
                         ${acoes}
                     </div>

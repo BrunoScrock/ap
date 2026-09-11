@@ -68,12 +68,17 @@
     background: color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
+html {
+    overflow-x: clip;
+}
+
 body {
     font-family: var(--font-family);
     background-color: var(--bg);
     color: var(--text);
     line-height: 1.5;
     min-height: 100vh;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s ease, color 0.3s ease;
 }

@@ -12,3 +12,82 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* ==========================================
+   TABELA DE PARCELAS - MODO CARTÃO (celular)
+   ========================================== */
+
+@media (max-width: 599px) {
+    #tabelaPagamentos.data-table {
+        min-width: 0;
+    }
+
+    #tabelaPagamentos thead {
+        display: none;
+    }
+
+    #tabelaPagamentos tbody,
+    #tabelaPagamentos tbody tr,
+    #tabelaPagamentos tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    #tabelaPagamentos tbody tr {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    #tabelaPagamentos tbody tr:nth-child(even),
+    #tabelaPagamentos tbody tr:hover {
+        background-color: var(--bg-card);
+    }
+
+    #tabelaPagamentos tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        border-bottom: 1px dashed var(--border);
+        white-space: normal;
+        text-align: right;
+    }
+
+    #tabelaPagamentos tbody td:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+
+    #tabelaPagamentos tbody td::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+    }
+
+    #tabelaPagamentos td[data-label="Ações"]::before {
+        content: none;
+    }
+
+    #tabelaPagamentos .acoes-cell {
+        justify-content: flex-end;
+    }
+
+    #tabelaPagamentos td.empty-state {
+        display: block;
+        text-align: center;
+        padding: 24px 8px;
+    }
+
+    #tabelaPagamentos td.empty-state::before {
+        content: none;
+    }
+}
