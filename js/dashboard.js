@@ -94,102 +94,111 @@ function desenharGraficoPagoDevedor(pago, devedor) {
     const tema = document.documentElement.getAttribute('data-theme') || 'light';
     const cores = getCoresTema(tema);
 
+    const total = (pago + devedor) || 1;
+    const pctPago = pago / total;
+
     const desenhar = (progresso) => {
         const dpr = window.devicePixelRatio || 1;
         const larguraCss = canvas.clientWidth || (canvas.parentElement ? canvas.parentElement.clientWidth - 32 : 300) || 300;
-        const alturaCss = 260;
+        const alturaCss = 300;
         canvas.width = Math.round(larguraCss * dpr);
         canvas.height = Math.round(alturaCss * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, larguraCss, alturaCss);
 
-        const valores = [pago, devedor];
-        const rotulos = ['Total Pago', 'Saldo Devedor'];
-        const total = valores.reduce((a, b) => a + b, 0) || 1;
-        const maxValor = Math.max(...valores, 1);
+        const cx = larguraCss / 2;
+        const cy = 126;
+        const raio = Math.max(56, Math.min((larguraCss - 56) / 2, 86));
+        const espessura = Math.max(18, Math.min(30, raio * 0.34));
+        const inicio = -Math.PI / 2;
+        const gap = 0.035;
+        const angulo = Math.PI * 2 * progresso;
+        const angPago = angulo * pctPago;
+        const angDevedor = angulo * (1 - pctPago);
 
-        const areaEsq = 14;
-        const areaDir = 14;
-        const areaTopo = 58;
-        const larguraUtil = larguraCss - areaEsq - areaDir;
-        const baseY = alturaCss - 42;
-        const alturaMax = baseY - areaTopo;
-
-        const espaco = 26;
-        const larguraBarra = Math.min(130, (larguraUtil - espaco) / 2);
-
-        // Linhas de grade horizontais
-        ctx.strokeStyle = 'rgba(127, 135, 150, 0.22)';
-        ctx.lineWidth = 1;
-        [0.25, 0.5, 0.75].forEach((f) => {
-            const gy = baseY - alturaMax * f;
-            ctx.beginPath();
-            ctx.moveTo(areaEsq, gy);
-            ctx.lineTo(larguraCss - areaDir, gy);
-            ctx.stroke();
-        });
-
-        // Linha de base
-        ctx.strokeStyle = 'rgba(127, 135, 150, 0.4)';
+        // Trilha (fundo)
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(127, 135, 150, 0.16)';
+        ctx.lineWidth = espessura;
         ctx.beginPath();
-        ctx.moveTo(areaEsq, baseY);
-        ctx.lineTo(larguraCss - areaDir, baseY);
+        ctx.arc(cx, cy, raio, 0, Math.PI * 2);
         ctx.stroke();
 
-        valores.forEach((valor, i) => {
-            const xc = areaEsq + (larguraUtil / valores.length) * i + larguraUtil / (valores.length * 2);
-            const x = xc - larguraBarra / 2;
-            const largF = (valor / maxValor) * alturaMax * progresso;
-            const y = baseY - largF;
-            const altura = baseY - y;
+        // Arco devedor (vermelho)
+        if (angDevedor > gap * 2) {
+            ctx.strokeStyle = cores.danger;
+            ctx.beginPath();
+            ctx.arc(cx, cy, raio, inicio + angPago + gap, inicio + angulo - gap);
+            ctx.stroke();
+        }
 
-            // Sombra da barra
+        // Arco pago (verde), com sombra
+        if (angPago > gap * 2) {
             ctx.save();
             ctx.shadowColor = 'rgba(0, 0, 0, 0.18)';
-            ctx.shadowBlur = 14;
-            ctx.shadowOffsetY = 6;
-
-            const grad = ctx.createLinearGradient(0, y, 0, baseY);
-            grad.addColorStop(0, i === 0 ? cores.success : cores.danger);
-            grad.addColorStop(1, i === 0 ? cores.successDark : cores.dangerDark);
-
-            ctx.fillStyle = grad;
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 3;
+            ctx.strokeStyle = cores.success;
             ctx.beginPath();
-            ctx.roundRect(x, y, larguraBarra, Math.max(altura, 0.001), Math.min(10, larguraBarra / 2));
-            ctx.fill();
+            ctx.arc(cx, cy, raio, inicio + gap, inicio + angPago - gap);
+            ctx.stroke();
             ctx.restore();
+        }
 
-            // Brilho no topo da barra
-            if (altura > 10) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
-                ctx.beginPath();
-                ctx.roundRect(x + 2, y + 3, larguraBarra - 4, Math.min(6, altura / 2), 4);
-                ctx.fill();
+        // Valor central: % quitado
+        ctx.textAlign = 'center';
+        ctx.fillStyle = cores.texto;
+        ctx.font = 'bold 30px sans-serif';
+        ctx.fillText((pctPago * 100).toFixed(1) + '%', cx, cy + 5);
+        ctx.fillStyle = cores.textSecundario;
+        ctx.font = '12px sans-serif';
+        ctx.fillText('quitado', cx, cy + 25);
+
+        // Legenda
+        const linhas = [
+            { cor: cores.success, label: 'Total Pago', valor: pago, pct: pctPago },
+            { cor: cores.danger, label: 'Saldo Devedor', valor: devedor, pct: 1 - pctPago }
+        ];
+        const yInicial = cy + raio + 34;
+        linhas.forEach((linha, i) => {
+            const y = yInicial + i * 22;
+            const txtValor = Utils.formatarMoeda(linha.valor) + '  (' + (linha.pct * 100).toFixed(1) + '%)';
+
+            let fs = 12;
+            ctx.font = fs + 'px sans-serif';
+            ctx.textAlign = 'left';
+            let wLabel = ctx.measureText(linha.label).width;
+            let wValor = ctx.measureText(txtValor).width;
+            while (wLabel + wValor + 28 > larguraCss - 24 && fs > 9.5) {
+                fs -= 0.5;
+                ctx.font = fs + 'px sans-serif';
+                wLabel = ctx.measureText(linha.label).width;
+                wValor = ctx.measureText(txtValor).width;
             }
 
-            // Valor + porcentagem acima da barra
-            const pct = ((valor / total) * 100).toFixed(1);
-            const txtY = Math.min(y - 12, areaTopo - 16);
-            ctx.textAlign = 'center';
-            ctx.fillStyle = cores.texto;
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText(Utils.formatarMoeda(valor), xc, txtY);
-            ctx.fillStyle = cores.textSecundario;
-            ctx.font = '11px sans-serif';
-            ctx.fillText(pct + '% do total', xc, txtY + 15);
+            const startX = (larguraCss - (wLabel + wValor + 28)) / 2;
 
-            // Rótulo da categoria
+            // Bolinha colorida
+            ctx.fillStyle = linha.cor;
+            ctx.beginPath();
+            ctx.arc(startX + 5, y - 4, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rótulo
             ctx.fillStyle = cores.textSecundario;
-            ctx.font = '12px sans-serif';
-            ctx.fillText(rotulos[i], xc, baseY + 20);
+            ctx.fillText(linha.label, startX + 15, y);
+
+            // Valor + %
+            ctx.font = 'bold ' + fs + 'px sans-serif';
+            ctx.fillStyle = cores.texto;
+            ctx.fillText(txtValor, startX + 15 + wLabel + 13, y);
         });
     };
 
-    // Animacao de crescimento (ease-out cubic)
-    const inicio = performance.now();
-    const duracao = 900;
+    const inicioT = performance.now();
+    const duracao = 950;
     const animar = (agora) => {
-        const t = Math.min((agora - inicio) / duracao, 1);
+        const t = Math.min((agora - inicioT) / duracao, 1);
         const e = 1 - Math.pow(1 - t, 3);
         desenhar(e);
         if (t < 1) _rafChart = requestAnimationFrame(animar);

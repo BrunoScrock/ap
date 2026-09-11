@@ -842,7 +842,7 @@ a.btn {
 
 .chart-card canvas {
     width: 100%;
-    max-height: 260px;
+    max-height: 300px;
 }
 
 /* Month selector */
