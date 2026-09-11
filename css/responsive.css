@@ -50,12 +50,9 @@
     }
 
     .bottom-nav {
-        max-width: none;
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
         justify-content: center;
         gap: 20px;
-        padding: 6px max(12px, calc(50vw - 550px));
+        padding: 6px 12px;
     }
 
     .nav-item {

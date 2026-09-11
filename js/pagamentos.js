@@ -20,9 +20,9 @@ function renderPagamentos() {
     const totalPagoMes = Calculos.totalPago(pagamentos, { mes: mesAtual, ano: anoAtual });
     const totalPagoAno = Calculos.totalPago(pagamentos, { ano: anoAtual });
     const totalINCCAno = Calculos.totalINCC(pagamentos, { ano: anoAtual });
+    const totalINCCGeral = Calculos.totalINCC(pagamentos);
     const qtdPagamentos = Calculos.quantidadePagamentos(pagamentos);
     const valorTotal = configuracoes.valorTotalApartamento || 0;
-    const saldoDevedor = Calculos.saldoDevedor(valorTotal, pagamentos);
     const percentual = Calculos.percentualQuitacao(valorTotal, pagamentos);
 
     // Atualiza totais
@@ -30,7 +30,7 @@ function renderPagamentos() {
     setTexto('qtdPagamentos', String(qtdPagamentos));
     setTexto('totalPagoMes', Utils.formatarMoeda(totalPagoMes));
     setTexto('totalPagoAno', Utils.formatarMoeda(totalPagoAno + totalINCCAno));
-    setTexto('saldoDevedorPag', Utils.formatarMoeda(saldoDevedor));
+    setTexto('totalINCCGeral', Utils.formatarMoeda(totalINCCGeral));
     setTexto('percentualQuitacaoPag', `${percentual.toFixed(1)}%`);
 
     // Renderiza tabela
