@@ -52,9 +52,17 @@ const Calculos = {
 
     /**
      * Calcula quantidade de pagamentos realizados
+     * @param {Array} pagamentos - Lista de pagamentos
+     * @param {Object} opcoes - Opções de filtro (categoria)
      */
-    quantidadePagamentos(pagamentos) {
-        return pagamentos.filter(p => p.status === 'pago').length;
+    quantidadePagamentos(pagamentos, opcoes = {}) {
+        return pagamentos
+            .filter(p => p.status === 'pago')
+            .filter(p => {
+                if (!opcoes.categoria) return true;
+                return String(p.categoria).toLowerCase() === String(opcoes.categoria).toLowerCase();
+            })
+            .length;
     },
 
     /**

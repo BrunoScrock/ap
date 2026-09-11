@@ -21,7 +21,7 @@ function renderPagamentos() {
     const totalPagoAno = Calculos.totalPago(pagamentos, { ano: anoAtual });
     const totalINCCAno = Calculos.totalINCC(pagamentos, { ano: anoAtual });
     const totalINCCGeral = Calculos.totalINCC(pagamentos);
-    const qtdPagamentos = Calculos.quantidadePagamentos(pagamentos);
+    const qtdPagamentos = Calculos.quantidadePagamentos(pagamentos, { categoria: 'parcela' });
     const valorTotal = configuracoes.valorTotalApartamento || 0;
     const percentual = Calculos.percentualQuitacao(valorTotal, pagamentos);
 
