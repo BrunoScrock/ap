@@ -15,6 +15,9 @@
     --bg: #f3f6f9;
     --bg-card: #ffffff;
     --bg-header: #1a3a5f;
+    --bg-blob-a: rgba(51, 108, 180, 0.18);
+    --bg-blob-b: rgba(10, 170, 130, 0.14);
+    --bg-blob-c: rgba(240, 120, 120, 0.12);
     --text: #1f2937;
     --text-secondary: #6b7280;
     --border: #e5e7eb;
@@ -38,6 +41,9 @@
     --yellow: #e0c060;
     --bg: #0f172a;
     --bg-card: #1e293b;
+    --bg-blob-a: rgba(74, 143, 232, 0.14);
+    --bg-blob-b: rgba(45, 212, 167, 0.11);
+    --bg-blob-c: rgba(242, 114, 114, 0.10);
     --bg-header: #122a47;
     --text: #e5e7eb;
     --text-secondary: #94a3b8;
@@ -70,6 +76,30 @@ body {
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================
+   FUNDO ANIMADO (blobs suaves)
+   ========================================== */
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: -12%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(44vw 44vw at 12% 16%, var(--bg-blob-a), transparent 62%),
+        radial-gradient(38vw 38vw at 88% 10%, var(--bg-blob-b), transparent 62%),
+        radial-gradient(48vw 48vw at 72% 92%, var(--bg-blob-c), transparent 62%);
+    animation: flutuarFundo 36s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+@keyframes flutuarFundo {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(2.5%, -2%, 0) scale(1.06); }
+    100% { transform: translate3d(-2.5%, 2%, 0) scale(1.1); }
 }
 
 /* ==========================================
@@ -806,9 +836,13 @@ a.btn {
     margin-bottom: 16px;
 }
 
+.chart-grid .chart-card:only-child {
+    grid-column: 1 / -1;
+}
+
 .chart-card canvas {
     width: 100%;
-    max-height: 250px;
+    max-height: 260px;
 }
 
 /* Month selector */

@@ -96,12 +96,10 @@ function desenharGraficoPagoDevedor(pago, devedor) {
 
     const desenhar = (progresso) => {
         const dpr = window.devicePixelRatio || 1;
-        const larguraCss = canvas.parentElement.clientWidth || 300;
+        const larguraCss = canvas.clientWidth || (canvas.parentElement ? canvas.parentElement.clientWidth - 32 : 300) || 300;
         const alturaCss = 260;
         canvas.width = Math.round(larguraCss * dpr);
         canvas.height = Math.round(alturaCss * dpr);
-        canvas.style.width = larguraCss + 'px';
-        canvas.style.height = alturaCss + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, larguraCss, alturaCss);
 
