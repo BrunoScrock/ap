@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.documentElement.setAttribute('data-theme', novo);
                 Storage.setTema(novo);
                 this.atualizarIconeTema(novo);
+                if (typeof window.redesenharGraficos === 'function') window.redesenharGraficos();
             });
         },
 

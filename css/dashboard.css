@@ -25,14 +25,14 @@
    ========================================== */
 
 @keyframes entrarSuave {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(18px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .page-content.active .page-hero,
 .page-content.active .card,
 .page-content.active .resumo-rapido {
-    animation: entrarSuave 0.5s ease both;
+    animation: entrarSuave 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .page-content.active .cards-grid .card:nth-child(2) { animation-delay: 0.06s; }
@@ -61,17 +61,36 @@
 
 /* Cards de estatística */
 .card-stat {
-    background: linear-gradient(160deg, var(--bg-card), color-mix(in srgb, var(--bg-card) 96%, var(--primary) 4%));
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: linear-gradient(160deg, var(--bg-card), color-mix(in srgb, var(--bg-card) 94%, var(--primary) 6%));
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100px;
+    min-height: 104px;
+    overflow: hidden;
+}
+
+.card-stat::after {
+    content: '';
+    position: absolute;
+    right: -42px;
+    top: -42px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 22%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+    transition: transform 0.4s ease;
 }
 
 .card-stat:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 30px -10px color-mix(in srgb, var(--accent-color) 38%, rgba(0, 0, 0, 0.25));
+}
+
+.card-stat:hover::after {
+    transform: scale(1.35);
 }
 
 .card-stat .card-label {

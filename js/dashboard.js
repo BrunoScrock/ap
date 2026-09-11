@@ -40,7 +40,6 @@ function renderDashboard() {
 
     // Gráficos
     desenharGraficoPagoDevedor(totalPago, saldoDevedor);
-    desenharGraficoPagamentosMes(pagamentos);
 }
 
 function renderResumoRapido(pagamentos, totalGuardado) {
@@ -81,121 +80,136 @@ function setTexto(id, texto) {
     if (el) el.textContent = texto;
 }
 
+let _rafChart = null;
+let _ultimosValoresChart = null;
+
 function desenharGraficoPagoDevedor(pago, devedor) {
     const canvas = document.getElementById('chartPagoDevedor');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
+    _ultimosValoresChart = [pago, devedor];
+    if (_rafChart) cancelAnimationFrame(_rafChart);
+
     const tema = document.documentElement.getAttribute('data-theme') || 'light';
     const cores = getCoresTema(tema);
 
-    const largura = canvas.parentElement.clientWidth || 300;
-    canvas.width = largura;
-    canvas.height = 250;
+    const desenhar = (progresso) => {
+        const dpr = window.devicePixelRatio || 1;
+        const larguraCss = canvas.parentElement.clientWidth || 300;
+        const alturaCss = 260;
+        canvas.width = Math.round(larguraCss * dpr);
+        canvas.height = Math.round(alturaCss * dpr);
+        canvas.style.width = larguraCss + 'px';
+        canvas.style.height = alturaCss + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, larguraCss, alturaCss);
 
-    const valores = [pago, devedor];
-    const rotulos = ['Total Pago', 'Saldo Devedor'];
-    const TOTAL_BARRAS = valores.reduce((a, b) => a + b, 0);
+        const valores = [pago, devedor];
+        const rotulos = ['Total Pago', 'Saldo Devedor'];
+        const total = valores.reduce((a, b) => a + b, 0) || 1;
+        const maxValor = Math.max(...valores, 1);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const areaEsq = 14;
+        const areaDir = 14;
+        const areaTopo = 58;
+        const larguraUtil = larguraCss - areaEsq - areaDir;
+        const baseY = alturaCss - 42;
+        const alturaMax = baseY - areaTopo;
 
-    const inicioX = 40;
-    const larguraBarra = (canvas.width - inicioX - 20) / valores.length - 20;
-    const alturaMax = canvas.height - 60;
-    const maxValor = Math.max(...valores, 1);
+        const espaco = 26;
+        const larguraBarra = Math.min(130, (larguraUtil - espaco) / 2);
 
-    // Fundo
-    ctx.fillStyle = 'transparent';
+        // Linhas de grade horizontais
+        ctx.strokeStyle = 'rgba(127, 135, 150, 0.22)';
+        ctx.lineWidth = 1;
+        [0.25, 0.5, 0.75].forEach((f) => {
+            const gy = baseY - alturaMax * f;
+            ctx.beginPath();
+            ctx.moveTo(areaEsq, gy);
+            ctx.lineTo(larguraCss - areaDir, gy);
+            ctx.stroke();
+        });
 
-    // Barras
-    valores.forEach((valor, i) => {
-        const x = inicioX + i * (larguraBarra + 20);
-        const altura = (valor / maxValor) * (alturaMax - 30);
-        const y = canvas.height - 40 - altura;
-
-        // Gradiente da barra
-        const grad = ctx.createLinearGradient(0, y, 0, canvas.height - 40);
-        grad.addColorStop(0, i === 0 ? cores.success : cores.danger);
-        grad.addColorStop(1, i === 0 ? cores.successDark : cores.dangerDark);
-
-        ctx.fillStyle = grad;
+        // Linha de base
+        ctx.strokeStyle = 'rgba(127, 135, 150, 0.4)';
         ctx.beginPath();
-        ctx.roundRect(x, y, larguraBarra, altura, 6);
-        ctx.fill();
+        ctx.moveTo(areaEsq, baseY);
+        ctx.lineTo(larguraCss - areaDir, baseY);
+        ctx.stroke();
 
-        // Rótulo
-        ctx.fillStyle = cores.textSecundario;
-        ctx.font = '12px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(rotulos[i], x + larguraBarra / 2, canvas.height - 22);
+        valores.forEach((valor, i) => {
+            const xc = areaEsq + (larguraUtil / valores.length) * i + larguraUtil / (valores.length * 2);
+            const x = xc - larguraBarra / 2;
+            const largF = (valor / maxValor) * alturaMax * progresso;
+            const y = baseY - largF;
+            const altura = baseY - y;
 
-        // Valor a cima da barra
-        ctx.fillStyle = cores.texto;
-        ctx.font = 'bold 13px sans-serif';
-        ctx.fillText(Utils.formatarMoeda(valor), x + larguraBarra / 2, y - 8);
-    });
+            // Sombra da barra
+            ctx.save();
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.18)';
+            ctx.shadowBlur = 14;
+            ctx.shadowOffsetY = 6;
 
-    // Legenda
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = cores.texto;
-    ctx.fillText('Distribuição do Investimento', canvas.width / 2, canvas.height - 2);
+            const grad = ctx.createLinearGradient(0, y, 0, baseY);
+            grad.addColorStop(0, i === 0 ? cores.success : cores.danger);
+            grad.addColorStop(1, i === 0 ? cores.successDark : cores.dangerDark);
+
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(x, y, larguraBarra, Math.max(altura, 0.001), Math.min(10, larguraBarra / 2));
+            ctx.fill();
+            ctx.restore();
+
+            // Brilho no topo da barra
+            if (altura > 10) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+                ctx.beginPath();
+                ctx.roundRect(x + 2, y + 3, larguraBarra - 4, Math.min(6, altura / 2), 4);
+                ctx.fill();
+            }
+
+            // Valor + porcentagem acima da barra
+            const pct = ((valor / total) * 100).toFixed(1);
+            const txtY = Math.min(y - 12, areaTopo - 16);
+            ctx.textAlign = 'center';
+            ctx.fillStyle = cores.texto;
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(Utils.formatarMoeda(valor), xc, txtY);
+            ctx.fillStyle = cores.textSecundario;
+            ctx.font = '11px sans-serif';
+            ctx.fillText(pct + '% do total', xc, txtY + 15);
+
+            // Rótulo da categoria
+            ctx.fillStyle = cores.textSecundario;
+            ctx.font = '12px sans-serif';
+            ctx.fillText(rotulos[i], xc, baseY + 20);
+        });
+    };
+
+    // Animacao de crescimento (ease-out cubic)
+    const inicio = performance.now();
+    const duracao = 900;
+    const animar = (agora) => {
+        const t = Math.min((agora - inicio) / duracao, 1);
+        const e = 1 - Math.pow(1 - t, 3);
+        desenhar(e);
+        if (t < 1) _rafChart = requestAnimationFrame(animar);
+    };
+    _rafChart = requestAnimationFrame(animar);
 }
 
-function desenharGraficoPagamentosMes(pagamentos) {
-    const canvas = document.getElementById('chartPagamentosMes');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    const tema = document.documentElement.getAttribute('data-theme') || 'light';
-    const cores = getCoresTema(tema);
-
-    const largura = canvas.parentElement.clientWidth || 300;
-    canvas.width = largura;
-    canvas.height = 250;
-
-    const porMes = Calculos.pagamentosPorMes(pagamentos);
-    const chaves = Object.keys(porMes).sort();
-
-    if (chaves.length === 0) {
-        ctx.fillStyle = cores.textSecundario;
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Sem pagamentos registrados', canvas.width / 2, canvas.height / 2);
-        return;
+window.addEventListener('resize', () => {
+    if (_ultimosValoresChart) {
+        desenharGraficoPagoDevedor(_ultimosValoresChart[0], _ultimosValoresChart[1]);
     }
+});
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const inicioX = 40;
-    const larguraBarra = (canvas.width - inicioX - 20) / chaves.length - 8;
-    const alturaMax = canvas.height - 50;
-    const maxValor = Math.max(...Object.values(porMes), 1);
-
-    chaves.forEach((chave, i) => {
-        const valor = porMes[chave];
-        const [ano, mes] = chave.split('-');
-        const x = inicioX + i * (larguraBarra + 8);
-        const altura = (valor / maxValor) * (alturaMax - 40);
-        const y = canvas.height - 45 - altura;
-
-        ctx.fillStyle = cores.primary;
-        ctx.beginPath();
-        ctx.roundRect(x, y, larguraBarra, altura, 4);
-        ctx.fill();
-
-        // Rótulo do mês
-        ctx.fillStyle = cores.textSecundario;
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(`${Utils.nomeMesCurto(parseInt(mes))}/${ano.slice(2)}`, x + larguraBarra / 2, canvas.height - 30);
-
-        // Valor
-        ctx.fillStyle = cores.texto;
-        ctx.font = '11px sans-serif';
-        ctx.fillText(Utils.formatarMoeda(valor), x + larguraBarra / 2, y - 6);
-    });
-}
+window.redesenharGraficos = function () {
+    if (_ultimosValoresChart) {
+        desenharGraficoPagoDevedor(_ultimosValoresChart[0], _ultimosValoresChart[1]);
+    }
+};
 
 function getCoresTema(tema) {
     if (tema === 'dark') {
