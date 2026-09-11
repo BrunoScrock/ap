@@ -80,28 +80,6 @@
     display: none;
 }
 
-.btn-sair {
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 600;
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 999px;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-sair:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.btn-sair:active {
-    transform: scale(0.96);
-}
-
 .header-usuario {
     display: flex;
     align-items: center;
@@ -120,11 +98,27 @@
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 999px;
-    padding: 4px 12px 4px 5px;
+    padding: 4px 10px 4px 5px;
     color: #ffffff;
     font-family: inherit;
     font-size: 13px;
-    cursor: default;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.user-chip:hover {
+    background: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+.user-chip:active {
+    transform: scale(0.97);
+}
+
+.icon-sair {
+    color: #f87171;
+    flex-shrink: 0;
+    margin-left: 2px;
 }
 
 .user-avatar {

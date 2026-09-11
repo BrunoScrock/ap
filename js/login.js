@@ -23,14 +23,37 @@ const Auth = {
         // Mostra o gate imediatamente (evita flash do conteudo antes da checagem)
         this.aplicarModo(false);
 
-        // Inicializa o cliente Supabase e carrega dados (cache + nuvem se logado)
-        await Storage.preparar();
+        // Inicializa o cliente Supabase sem rede
+        if (typeof Storage._carregarCliente === 'function') Storage._carregarCliente();
 
         if (!window.supabase || !Storage._supabase) {
             this.mostrarErro('Servico de login ainda nao configurado.');
             return;
         }
 
+        // 1) Decisao visual RAPIDA baseada na sessao LOCAL (sem rede)
+        try {
+            const { data: { session } } = await Storage._supabase.auth.getSession();
+            const email = session && session.user && session.user.email
+                ? String(session.user.email).toLowerCase().trim() : '';
+            if (email) {
+                if (this.emailPermitido(email)) {
+                    this.usuario = email;
+                    this.nomeUsuario = (session.user.user_metadata && session.user.user_metadata.name) || '';
+                    this.fotoUsuario = (session.user.user_metadata && session.user.user_metadata.avatar_url) || '';
+                    this.atualizarUsuario();
+                    this.aplicarModo(true);
+                } else {
+                    this.aplicarModo(false);
+                    try { await Storage._supabase.auth.signOut(); } catch (e) {}
+                }
+            }
+        } catch (e) {}
+
+        // 2) Carrega os dados completos (cache + nuvem se logado)
+        await Storage.preparar();
+
+        // 3) Confirmacao REAL com o servidor (valida o token)
         try {
             const { data: { user } } = await Storage._supabase.auth.getUser();
             if (user && user.email) {
@@ -113,28 +136,34 @@ const Auth = {
         grupo.id = 'usuarioBox';
         grupo.hidden = true;
 
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = 'user-chip';
-        chip.title = 'Conta logada';
+        const btn = document.createElement('button');
+        btn.id = 'btnSair';
+        btn.type = 'button';
+        btn.className = 'user-chip';
+        btn.title = 'Sair da conta';
+        btn.addEventListener('click', () => this.sair());
 
         const avatar = document.createElement('span');
         avatar.className = 'user-avatar';
         const nomeEl = document.createElement('span');
         nomeEl.className = 'user-name';
 
-        chip.appendChild(avatar);
-        chip.appendChild(nomeEl);
+        const icone = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        icone.setAttribute('class', 'icon-sair');
+        icone.setAttribute('width', '16');
+        icone.setAttribute('height', '16');
+        icone.setAttribute('viewBox', '0 0 24 24');
+        icone.setAttribute('fill', 'none');
+        icone.setAttribute('stroke', 'currentColor');
+        icone.setAttribute('stroke-width', '2.2');
+        icone.setAttribute('stroke-linecap', 'round');
+        icone.setAttribute('stroke-linejoin', 'round');
+        icone.innerHTML = '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>';
 
-        const btn = document.createElement('button');
-        btn.id = 'btnSair';
-        btn.className = 'btn-sair';
-        btn.type = 'button';
-        btn.title = 'Sair da conta';
-        btn.textContent = 'Sair';
-        btn.addEventListener('click', () => this.sair());
+        btn.appendChild(avatar);
+        btn.appendChild(nomeEl);
+        btn.appendChild(icone);
 
-        grupo.appendChild(chip);
         grupo.appendChild(btn);
         header.appendChild(grupo);
     },
