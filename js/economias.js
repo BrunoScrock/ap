@@ -5,6 +5,7 @@
 function iniciarPagina() {
     renderEconomias();
     configurarFormularios();
+    configurarConfirmarExclusao();
 }
 
 function tipoEconomiaLabel(destino) {
@@ -161,11 +162,15 @@ function abrirEdicaoEconomia(id) {
 function excluirEconomia(id) {
     const e = buscarEconomia(id);
     if (!e) return;
-    if (confirm('Excluir este valor guardado?')) {
-        Storage.removerEconomia(String(e.id));
-        Toast.success('Valor guardado excluído.');
-        renderEconomias();
-    }
+    abrirConfirmarExclusao(
+        'Excluir valor guardado?',
+        `Deseja excluir ${Utils.formatarMoeda(e.valor)} (${tipoEconomiaLabel(e.destino)})?`,
+        () => {
+            Storage.removerEconomia(String(e.id));
+            Toast.success('Valor guardado excluído.');
+            renderEconomias();
+        }
+    );
 }
 
 function abrirEdicaoItem(id) {
@@ -183,10 +188,53 @@ function abrirEdicaoItem(id) {
 function excluirItem(id) {
     const i = buscarItem(id);
     if (!i) return;
-    if (confirm('Excluir este item?')) {
-        Storage.removerItemCompra(String(i.id));
-        Toast.success('Item excluído.');
-        renderEconomias();
+    abrirConfirmarExclusao(
+        'Excluir item?',
+        `Deseja excluir "${Utils.escapeHTML(i.nome || '')}" da lista de compras?`,
+        () => {
+            Storage.removerItemCompra(String(i.id));
+            Toast.success('Item excluído.');
+            renderEconomias();
+        }
+    );
+}
+
+let confirmarExclusaoCallback = null;
+
+function abrirConfirmarExclusao(titulo, mensagem, aoConfirmar) {
+    confirmarExclusaoCallback = aoConfirmar;
+    if (document.getElementById('modalConfirmarTitle')) {
+        document.getElementById('modalConfirmarTitle').textContent = titulo;
+    }
+    if (document.getElementById('modalConfirmarMensagem')) {
+        document.getElementById('modalConfirmarMensagem').textContent = mensagem;
+    }
+    window.App.abrirModal('modalConfirmarExclusao');
+}
+
+function configurarConfirmarExclusao() {
+    const btn = document.getElementById('btnConfirmarExclusao');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const acao = confirmarExclusaoCallback;
+        confirmarExclusaoCallback = null;
+        window.App.fecharModal(document.getElementById('modalConfirmarExclusao'));
+        if (typeof acao === 'function') acao();
+    });
+
+    const modal = document.getElementById('modalConfirmarExclusao');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                confirmarExclusaoCallback = null;
+            }
+        });
+        modal.querySelectorAll('[data-fechar-modal]').forEach(b => {
+            b.addEventListener('click', () => {
+                confirmarExclusaoCallback = null;
+            });
+        });
     }
 }
 

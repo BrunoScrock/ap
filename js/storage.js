@@ -260,7 +260,7 @@ const Storage = {
     },
 
     removerEconomia(id) {
-        const economias = this.getEconomias().filter(e => e.id !== id);
+        const economias = this.getEconomias().filter(e => String(e.id) !== String(id));
         this.setEconomias(economias);
     },
 
@@ -294,7 +294,7 @@ const Storage = {
     },
 
     removerItemCompra(id) {
-        const itens = this.getItensCompra().filter(i => i.id !== id);
+        const itens = this.getItensCompra().filter(i => String(i.id) !== String(id));
         this.setItensCompra(itens);
     },
 
