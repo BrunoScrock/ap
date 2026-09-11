@@ -82,7 +82,6 @@ const Auth = {
         if (!grupo) return;
         const av = grupo.querySelector('.user-avatar');
         const nomeEl = grupo.querySelector('.user-name');
-        const emailEl = grupo.querySelector('.user-email');
         if (av) {
             if (this.fotoUsuario) {
                 av.innerHTML = '<img src="' + this.fotoUsuario + '" alt="">';
@@ -91,7 +90,6 @@ const Auth = {
             }
         }
         if (nomeEl) nomeEl.textContent = this.nomeUsuario || this.usuario;
-        if (emailEl) emailEl.textContent = this.usuario;
     },
 
     configurarBotaoGoogle() {
@@ -124,12 +122,9 @@ const Auth = {
         avatar.className = 'user-avatar';
         const nomeEl = document.createElement('span');
         nomeEl.className = 'user-name';
-        const emailEl = document.createElement('span');
-        emailEl.className = 'user-email';
 
         chip.appendChild(avatar);
         chip.appendChild(nomeEl);
-        chip.appendChild(emailEl);
 
         const btn = document.createElement('button');
         btn.id = 'btnSair';

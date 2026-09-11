@@ -116,7 +116,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    max-width: 260px;
+    max-width: 200px;
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 999px;
@@ -152,26 +152,18 @@
 .user-name {
     font-weight: 600;
     white-space: nowrap;
-}
-
-.user-email {
-    font-size: 12px;
-    opacity: 0.85;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 170px;
 }
 
 @media (max-width: 640px) {
-    .user-name,
-    .user-email {
-        display: none;
+    .user-chip {
+        max-width: 150px;
+        padding: 4px 10px 4px 5px;
     }
 
-    .user-chip {
-        max-width: none;
-        padding: 4px;
+    .user-chip .user-name {
+        font-size: 12px;
     }
 
     .header-usuario {
