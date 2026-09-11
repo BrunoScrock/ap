@@ -5,6 +5,7 @@
 function iniciarPagina() {
     renderPagamentos();
     configurarFormularios();
+    configurarConfirmarExclusao();
 }
 
 function renderPagamentos() {
@@ -190,10 +191,50 @@ function excluirPagamento(id) {
     const p = buscarPagamento(id);
     if (!p) return;
 
-    if (confirm(`Excluir a parcela "${p.descricao}"?`)) {
-        Storage.removerPagamento(id);
-        Toast.success('Parcela excluída.');
-        renderPagamentos();
+    const label = `${Utils.escapeHTML(p.descricao)}${p.referencia && p.referencia !== '—' ? ` (#${p.referencia})` : ''}`;
+    abrirConfirmarExclusao(
+        'Excluir parcela?',
+        `Deseja excluir a parcela "${label}"?`,
+        () => {
+            Storage.removerPagamento(id);
+            Toast.success('Parcela excluída.');
+            renderPagamentos();
+        }
+    );
+}
+
+let confirmarExclusaoCallback = null;
+
+function abrirConfirmarExclusao(titulo, mensagem, aoConfirmar) {
+    confirmarExclusaoCallback = aoConfirmar;
+    document.getElementById('modalConfirmarTitle').textContent = titulo;
+    document.getElementById('modalConfirmarMensagem').textContent = mensagem;
+    window.App.abrirModal('modalConfirmarExclusao');
+}
+
+function configurarConfirmarExclusao() {
+    const btn = document.getElementById('btnConfirmarExclusao');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const acao = confirmarExclusaoCallback;
+        confirmarExclusaoCallback = null;
+        window.App.fecharModal(document.getElementById('modalConfirmarExclusao'));
+        if (typeof acao === 'function') acao();
+    });
+
+    const modal = document.getElementById('modalConfirmarExclusao');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                confirmarExclusaoCallback = null;
+            }
+        });
+        modal.querySelectorAll('[data-fechar-modal]').forEach(b => {
+            b.addEventListener('click', () => {
+                confirmarExclusaoCallback = null;
+            });
+        });
     }
 }
 
