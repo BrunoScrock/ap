@@ -292,6 +292,53 @@
 }
 
 /* ==========================================
+   RESUMO FINANCEIRO (BRUNO E GEOVANA ALINHADOS)
+   ========================================== */
+
+.resumos-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.resumos-grid .card {
+    margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+    .resumos-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+
+    .resumos-grid .card {
+        height: 100%;
+    }
+}
+
+/* ==========================================
+   BOTÕES COMPACTOS E FORMULÁRIO EM 2 COLUNAS
+   ========================================== */
+
+.btn-sm {
+    padding: 7px 12px;
+    font-size: 13px;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 12px;
+}
+
+@media (min-width: 560px) {
+    .form-row-2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ==========================================
    RESPONSIVO
    ========================================== */
 
