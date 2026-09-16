@@ -86,79 +86,360 @@
                     </button>
                 </div>
 
-                <div class="salary-card">
-                    <div class="card-title">Salário do Mês</div>
-                    <div class="salary-value" id="salarioMes">R$ 0,00</div>
-                    <button class="btn btn-primary btn-full" id="btnEditarSalario">Editar Salário</button>
-                </div>
-
+                <!-- APARTAMENTO - DIVISÃO DE PAGAMENTO -->
                 <div class="card">
-                    <div class="card-title">Distribuição do Mês</div>
-                    <div class="distribution-list" id="listaDistribuicao">
-                    </div>
-                </div>
-
-                <div class="chart-grid">
-                    <div class="card chart-card">
-                        <div class="card-title">Gráfico de Distribuição</div>
-                        <canvas id="chartDistribuicao"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Cartões de Crédito</div>
-                    <div class="cards-credit-grid" id="gridCartoesCredito">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Débitos Automáticos</div>
-                    <div class="table-wrapper">
-                        <table class="data-table" id="tabelaDebitos">
-                            <thead>
-                                <tr>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="corpoTabelaDebitos">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Controle de Gastos Pessoais</div>
-                    <div class="gastos-container">
+                    <div class="card-title">Apartamento — Divisão do Pagamento</div>
+                    <div class="apartamento-grid">
                         <div class="form-group">
-                            <label for="limiteGastos">Limite Disponível</label>
-                            <input type="text" id="limiteGastos" inputmode="decimal" placeholder="0,00">
+                            <label for="apEntrada">Entrada do apartamento</label>
+                            <input type="text" id="apEntrada" inputmode="decimal" placeholder="0,00">
                         </div>
                         <div class="form-group">
-                            <label for="gastosRealizados">Gastos Realizados</label>
-                            <input type="text" id="gastosRealizados" inputmode="decimal" placeholder="0,00">
+                            <label for="apJuros">Juros da obra</label>
+                            <input type="text" id="apJuros" inputmode="decimal" placeholder="0,00">
                         </div>
-                        <div class="budget-status" id="statusOrcamento"></div>
+                        <div class="ap-total">
+                            <span class="ap-total-label">Total do apartamento</span>
+                            <span class="ap-total-value" id="apTotal">R$ 0,00</span>
+                        </div>
                     </div>
+                    <div class="split-card" id="splitCard">
+                        <div class="split-quem bruno" id="splitBruno">
+                            <span class="split-nome">Bruno</span>
+                            <span class="split-info">
+                                <strong id="splitBrunoPct">—</strong> das despesas · <span id="splitBrunoVal">R$ 0,00</span>
+                            </span>
+                        </div>
+                        <div class="split-quem geovana" id="splitGeovana">
+                            <span class="split-nome">Geovana</span>
+                            <span class="split-info">
+                                <strong id="splitGeovanaPct">—</strong> das despesas · <span id="splitGeovanaVal">R$ 0,00</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p class="split-note" id="splitNote" hidden>
+                        Empate nos saldos disponíveis: apartamento dividido em 50/50 neste mês.
+                    </p>
                 </div>
 
+                <!-- BRUNO -->
+                <section class="person-section bruno">
+                    <div class="person-banner">
+                        <span class="person-avatar">B</span>
+                        <span class="person-name">Bruno</span>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Salário do Bruno</div>
+                        <div class="income-grid">
+                            <div class="form-group">
+                                <label for="brunoSalarioInput">Salário do mês</label>
+                                <input type="text" id="brunoSalarioInput" inputmode="decimal" placeholder="0,00">
+                            </div>
+                            <div class="form-group">
+                                <label for="brunoOutrasInput">Outras receitas</label>
+                                <input type="text" id="brunoOutrasInput" inputmode="decimal" placeholder="0,00">
+                            </div>
+                            <div class="income-total">
+                                <span class="income-total-label">Total de receitas do Bruno</span>
+                                <span class="income-total-value" id="brunoReceitasTotal">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Cartão de Crédito — Bruno</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoCreditoBruno">+ Novo Gasto</button>
+                        </div>
+                        <div class="credit-totals">
+                            <span class="credit-total-chip">Total: <strong id="credTotalBruno">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Fixos: <strong id="credFixoBruno">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Parcelados: <strong id="credParceladoBruno">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Reembolsos: <strong id="credReembBruno">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Previstos: <strong id="credPrevistoBruno">R$ 0,00</strong></span>
+                            <span class="credit-total-chip destaque">Total efetivo: <strong id="credEfetivoBruno">R$ 0,00</strong></span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaCreditoBruno">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Tipo</th>
+                                        <th>Parcelas</th>
+                                        <th>Atual</th>
+                                        <th>Categoria</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoCreditoBruno"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Reembolsos do Cartão — Bruno</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoReembolsoBruno">+ Novo Reembolso</button>
+                        </div>
+                        <p class="reembolso-note">
+                            Reembolsos <strong>"Previstos"</strong> ainda não abatem do total do cartão — somente os
+                            <strong>"Recebidos"</strong> reduzem o valor a pagar do Bruno.
+                        </p>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaReembolsoBruno">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Responsável</th>
+                                        <th>Status</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoReembolsoBruno"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Cartão de Débito — Bruno</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoDebitoBruno">+ Novo Gasto</button>
+                        </div>
+                        <div class="credit-totals">
+                            <span class="credit-total-chip destaque">Total de débito: <strong id="debTotalBruno">R$ 0,00</strong></span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaDebitoBruno">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Categoria</th>
+                                        <th>Data</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoDebitoBruno"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Resumo Financeiro — Bruno</div>
+                        <div class="totals-grid">
+                            <div class="card-stat">
+                                <span class="card-label">Salário</span>
+                                <span class="card-value" id="brunoSalario">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="warning">
+                                <span class="card-label">Total do cartão de crédito</span>
+                                <span class="card-value" id="brunoCredito">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="success">
+                                <span class="card-label">Reembolsos (recebidos)</span>
+                                <span class="card-value" id="brunoReembolsos">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat">
+                                <span class="card-label">Total efetivo do cartão</span>
+                                <span class="card-value" id="brunoEfetivo">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="yellow">
+                                <span class="card-label">Total do cartão de débito</span>
+                                <span class="card-value" id="brunoDebito">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="danger">
+                                <span class="card-label">Total geral de gastos</span>
+                                <span class="card-value" id="brunoGastos">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat">
+                                <span class="card-label">Saldo antes do apartamento</span>
+                                <span class="card-value" id="brunoSaldAntes">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="primary">
+                                <span class="card-label">Valor destinado ao apartamento</span>
+                                <span class="card-value" id="brunoApto">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat highlight-final">
+                                <span class="card-label">Saldo final</span>
+                                <span class="card-value" id="brunoSaldoFinal">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GEOVANA -->
+                <section class="person-section geovana">
+                    <div class="person-banner">
+                        <span class="person-avatar">G</span>
+                        <span class="person-name">Geovana</span>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Salário da Geovana</div>
+                        <div class="income-grid">
+                            <div class="form-group">
+                                <label for="geoSalarioInput">Salário do mês</label>
+                                <input type="text" id="geoSalarioInput" inputmode="decimal" placeholder="0,00">
+                            </div>
+                            <div class="form-group">
+                                <label for="geoOutrasInput">Outras receitas</label>
+                                <input type="text" id="geoOutrasInput" inputmode="decimal" placeholder="0,00">
+                            </div>
+                            <div class="income-total">
+                                <span class="income-total-label">Total de receitas da Geovana</span>
+                                <span class="income-total-value" id="geoReceitasTotal">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Cartão de Crédito — Geovana</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoCreditoGeo">+ Novo Gasto</button>
+                        </div>
+                        <div class="credit-totals">
+                            <span class="credit-total-chip">Total: <strong id="credTotalGeo">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Fixos: <strong id="credFixoGeo">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Parcelados: <strong id="credParceladoGeo">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Reembolsos: <strong id="credReembGeo">R$ 0,00</strong></span>
+                            <span class="credit-total-chip">Previstos: <strong id="credPrevistoGeo">R$ 0,00</strong></span>
+                            <span class="credit-total-chip destaque">Total efetivo: <strong id="credEfetivoGeo">R$ 0,00</strong></span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaCreditoGeo">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Tipo</th>
+                                        <th>Parcelas</th>
+                                        <th>Atual</th>
+                                        <th>Categoria</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoCreditoGeo"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Reembolsos do Cartão — Geovana</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoReembolsoGeo">+ Novo Reembolso</button>
+                        </div>
+                        <p class="reembolso-note">
+                            Reembolsos <strong>"Previstos"</strong> ainda não abatem do total do cartão — somente os
+                            <strong>"Recebidos"</strong> reduzem o valor a pagar da Geovana.
+                        </p>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaReembolsoGeo">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Responsável</th>
+                                        <th>Status</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoReembolsoGeo"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title-row">
+                            <div class="card-title">Cartão de Débito — Geovana</div>
+                            <button class="btn btn-primary btn-sm" id="btnNovoDebitoGeo">+ Novo Gasto</button>
+                        </div>
+                        <div class="credit-totals">
+                            <span class="credit-total-chip destaque">Total de débito: <strong id="debTotalGeo">R$ 0,00</strong></span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="tabelaDebitoGeo">
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                        <th>Categoria</th>
+                                        <th>Data</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoDebitoGeo"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Resumo Financeiro — Geovana</div>
+                        <div class="totals-grid">
+                            <div class="card-stat">
+                                <span class="card-label">Salário</span>
+                                <span class="card-value" id="geoSalario">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="warning">
+                                <span class="card-label">Total do cartão de crédito</span>
+                                <span class="card-value" id="geoCredito">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="success">
+                                <span class="card-label">Reembolsos (recebidos)</span>
+                                <span class="card-value" id="geoReembolsos">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat">
+                                <span class="card-label">Total efetivo do cartão</span>
+                                <span class="card-value" id="geoEfetivo">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="yellow">
+                                <span class="card-label">Total do cartão de débito</span>
+                                <span class="card-value" id="geoDebito">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="danger">
+                                <span class="card-label">Total geral de gastos</span>
+                                <span class="card-value" id="geoGastos">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat">
+                                <span class="card-label">Saldo antes do apartamento</span>
+                                <span class="card-value" id="geoSaldAntes">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat" data-accent="primary">
+                                <span class="card-label">Valor destinado ao apartamento</span>
+                                <span class="card-value" id="geoApto">R$ 0,00</span>
+                            </div>
+                            <div class="card-stat highlight-final">
+                                <span class="card-label">Saldo final</span>
+                                <span class="card-value" id="geoSaldFinal">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RESUMO FINAL DO MÊS -->
                 <div class="card">
-                    <div class="card-title">Histórico de Meses</div>
+                    <div class="card-title">Resumo Final do Mês</div>
                     <div class="table-wrapper">
-                        <table class="data-table" id="tabelaHistorico">
+                        <table class="data-table" id="tabelaResumoFinal">
                             <thead>
                                 <tr>
-                                    <th>Mês</th>
-                                    <th>Salário</th>
-                                    <th>Apartamento</th>
-                                    <th>Economia</th>
-                                    <th>Gastos</th>
+                                    <th>Informação</th>
+                                    <th>Bruno</th>
+                                    <th>Geovana</th>
                                 </tr>
                             </thead>
-                            <tbody id="corpoTabelaHistorico">
-                            </tbody>
+                            <tbody id="corpoResumoFinal"></tbody>
                         </table>
                     </div>
+                    <div class="mensagens-saldo" id="mensagensSaldo"></div>
                 </div>
             </section>
         </main>
@@ -207,43 +488,163 @@
         </nav>
     </div>
 
-    <!-- Modal Editar Salário -->
-    <div class="modal-overlay" id="modalSalario">
+    <!-- Modal Novo/Editar Gasto de Crédito -->
+    <div class="modal-overlay" id="modalCredito">
         <div class="modal">
             <div class="modal-header">
-                <h3>Editar Salário e Distribuição</h3>
+                <h3 id="modalCredito-title">Novo Gasto no Cartão de Crédito</h3>
                 <button class="btn-close" data-fechar-modal>&times;</button>
             </div>
-            <form id="formSalario">
+            <form id="formCredito">
+                <input type="hidden" id="credId">
+                <input type="hidden" id="credPessoa">
                 <div class="form-group">
-                    <label for="salarioInput">Salário</label>
-                    <input type="text" id="salarioInput" inputmode="decimal" placeholder="0,00" required>
+                    <label for="credDescricao">Descrição do gasto</label>
+                    <input type="text" id="credDescricao" placeholder="Ex.: iFood, Mercado Livre..." required>
                 </div>
                 <div class="form-group">
-                    <label for="reembolsoInput">Reembolso</label>
-                    <input type="text" id="reembolsoInput" inputmode="decimal" placeholder="0,00">
+                    <label for="credValor">Valor</label>
+                    <input type="text" id="credValor" inputmode="decimal" placeholder="0,00" required>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="credTipo">Tipo de pagamento</label>
+                        <select id="credTipo">
+                            <option value="fixo">Fixo</option>
+                            <option value="parcelado">Parcelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="credCategoria">Categoria</label>
+                        <input type="text" id="credCategoria" placeholder="Opcional">
+                    </div>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="credQuant">Total de parcelas</label>
+                        <input type="number" id="credQuant" min="1" placeholder="Opcional">
+                    </div>
+                    <div class="form-group">
+                        <label for="credAtual">Parcela atual</label>
+                        <input type="number" id="credAtual" min="1" placeholder="Opcional">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="divisaoApartamentoInput">Destino ao Apartamento</label>
-                    <input type="text" id="divisaoApartamentoInput" inputmode="decimal" placeholder="0,00">
-                </div>
-                <div class="form-group">
-                    <label for="economiaInput">Destino à Economia</label>
-                    <input type="text" id="economiaInput" inputmode="decimal" placeholder="0,00">
-                </div>
-                <div class="form-group">
-                    <label for="gastosFixosInput">Gastos Fixos</label>
-                    <input type="text" id="gastosFixosInput" inputmode="decimal" placeholder="0,00">
-                </div>
-                <div class="form-group">
-                    <label for="gastosVariaveisInput">Gastos Variáveis</label>
-                    <input type="text" id="gastosVariaveisInput" inputmode="decimal" placeholder="0,00">
+                    <label for="credObs">Observação</label>
+                    <textarea id="credObs" rows="2" placeholder="Opcional"></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Novo/Editar Gasto de Débito -->
+    <div class="modal-overlay" id="modalDebito">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalDebito-title">Novo Gasto no Cartão de Débito</h3>
+                <button class="btn-close" data-fechar-modal>&times;</button>
+            </div>
+            <form id="formDebito">
+                <input type="hidden" id="debId">
+                <input type="hidden" id="debPessoa">
+                <div class="form-group">
+                    <label for="debDescricao">Descrição do gasto</label>
+                    <input type="text" id="debDescricao" placeholder="Ex.: Mercado, Posto..." required>
+                </div>
+                <div class="form-group">
+                    <label for="debValor">Valor</label>
+                    <input type="text" id="debValor" inputmode="decimal" placeholder="0,00" required>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="debCategoria">Categoria</label>
+                        <input type="text" id="debCategoria" placeholder="Opcional">
+                    </div>
+                    <div class="form-group">
+                        <label for="debData">Data</label>
+                        <input type="date" id="debData">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="debObs">Observação</label>
+                    <textarea id="debObs" rows="2" placeholder="Opcional"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Novo/Editar Reembolso -->
+    <div class="modal-overlay" id="modalReembolso">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalReembolso-title">Novo Reembolso do Cartão</h3>
+                <button class="btn-close" data-fechar-modal>&times;</button>
+            </div>
+            <form id="formReembolso">
+                <input type="hidden" id="reembId">
+                <input type="hidden" id="reembPessoa">
+                <div class="form-group">
+                    <label for="reembDescricao">Descrição do reembolso</label>
+                    <input type="text" id="reembDescricao" placeholder="Ex.: Comprar para alguém" required>
+                </div>
+                <div class="form-group">
+                    <label for="reembValor">Valor</label>
+                    <input type="text" id="reembValor" inputmode="decimal" placeholder="0,00" required>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="reembResponsavel">Pessoa responsável</label>
+                        <input type="text" id="reembResponsavel" placeholder="Opcional">
+                    </div>
+                    <div class="form-group">
+                        <label for="reembStatus">Status</label>
+                        <select id="reembStatus">
+                            <option value="previsto">Previsto</option>
+                            <option value="recebido">Recebido</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reembObs">Observação</label>
+                    <textarea id="reembObs" rows="2" placeholder="Opcional"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div class="modal-overlay" id="modalConfirmarExclusao">
+        <div class="modal modal-confirm">
+            <div class="modal-confirm-body">
+                <div class="modal-confirm-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
+                </div>
+                <h3 id="modalConfirmarTitle">Excluir lançamento?</h3>
+                <p id="modalConfirmarMensagem">Deseja excluir este lançamento?</p>
+                <p class="modal-confirm-hint">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-confirm-actions">
+                <button type="button" class="btn btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Excluir</button>
+            </div>
         </div>
     </div>
 

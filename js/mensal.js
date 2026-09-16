@@ -1,5 +1,5 @@
 /* ==========================================
-   MENSAL - Controle Financeiro Mensal
+   MENSAL - Controle Financeiro Mensal (Bruno + Geovana)
    ========================================== */
 
 let controleMensal = {
@@ -7,63 +7,166 @@ let controleMensal = {
     ano: new Date().getFullYear()
 };
 
+const PESSOAS = ['bruno', 'geovana'];
+
+let confirmarExclusaoCallback = null;
+
 function iniciarPagina() {
+    migrarEstruturaMensal();
     renderMes();
-    configurarEventos();
+    configurarFormularios();
+    configurarConfirmarExclusao();
 }
+
+/* ---------- Migração dos dados antigos ---------- */
+
+function migrarEstruturaMensal() {
+    const meses = Storage.getMeses();
+    const novos = meses.filter(m => m && m.bruno && m.geovana && m.apartamento);
+    if (novos.length !== meses.length) {
+        Storage.setMeses(novos);
+    }
+}
+
+/* ---------- Modelo de dados ---------- */
 
 function chaveMesAtual() {
     return Utils.chaveMes(controleMensal.ano, controleMensal.mes);
 }
 
+function criarPessoaModelo() {
+    return {
+        salario: 0,
+        outrasReceitas: 0,
+        credito: [],
+        debito: [],
+        reembolsos: []
+    };
+}
+
 function obterOuCriarMes() {
     const id = chaveMesAtual();
     const mes = Storage.getMes(id);
-    if (mes) return mes;
-
+    if (mes) {
+        if (!mes.bruno) mes.bruno = criarPessoaModelo();
+        if (!mes.geovana) mes.geovana = criarPessoaModelo();
+        if (!mes.apartamento) mes.apartamento = { entrada: 0, juros: 0 };
+        return mes;
+    }
     const novoMes = {
         id,
         nome: `${Utils.nomeMes(controleMensal.mes)} ${controleMensal.ano}`,
-        salario: 0,
-        reembolso: 0,
-        cartoesCredito: [],
-        debitosAutomaticos: [],
-        divisaoApartamento: 0,
-        economia: 0,
-        gastosFixos: 0,
-        gastosVariaveis: 0,
-        gastosPessoaisDisponiveis: 0,
-        gastosRealizados: 0
+        bruno: criarPessoaModelo(),
+        geovana: criarPessoaModelo(),
+        apartamento: { entrada: 0, juros: 0 }
     };
-
     Storage.salvarMes(novoMes);
     return novoMes;
 }
 
+function obterLista(mes, tipo, pessoa) {
+    if (tipo === 'credito') return mes[pessoa].credito;
+    if (tipo === 'debito') return mes[pessoa].debito;
+    return mes[pessoa].reembolsos;
+}
+
+function rotuloTipo(tipo) {
+    if (tipo === 'credito') return 'cartão de crédito';
+    if (tipo === 'debito') return 'cartão de débito';
+    return 'reembolso';
+}
+
+function nomePessoa(pessoa) {
+    return pessoa === 'bruno' ? 'Bruno' : 'Geovana';
+}
+
+function idDe(pessoa) {
+    return pessoa === 'bruno' ? 'Bruno' : 'Geo';
+}
+
+/* ---------- Cálculos por pessoa ---------- */
+
+function somar(lista) {
+    return lista.reduce((soma, item) => soma + (item.valor || 0), 0);
+}
+
+function totalCredito(p) { return somar(p.credito); }
+function totalCreditoFixo(p) { return somar(p.credito.filter(c => c.tipo === 'fixo')); }
+function totalCreditoParcelado(p) { return somar(p.credito.filter(c => c.tipo === 'parcelado')); }
+function totalDebito(p) { return somar(p.debito); }
+
+function reembolsoPorStatus(p, status) {
+    return somar(p.reembolsos.filter(r => r.status === status));
+}
+
+function reembolsoRecebido(p) { return reembolsoPorStatus(p, 'recebido'); }
+function reembolsoPrevisto(p) { return reembolsoPorStatus(p, 'previsto'); }
+
+function totalEfetivoCredito(p) {
+    return totalCredito(p) - reembolsoRecebido(p);
+}
+
+function totalReceitas(p) {
+    return (p.salario || 0) + (p.outrasReceitas || 0);
+}
+
+function totalGastos(p) {
+    return totalEfetivoCredito(p) + totalDebito(p);
+}
+
+function saldoAntesApto(p) {
+    return totalReceitas(p) - totalGastos(p);
+}
+
+function saldoFinal(p, parteApto) {
+    return saldoAntesApto(p) - (parteApto || 0);
+}
+
+/* ---------- Divisão do apartamento (75/25 ou 50/50) ---------- */
+
+function calcularDivisao(mes) {
+    const b = saldoAntesApto(mes.bruno);
+    const g = saldoAntesApto(mes.geovana);
+    const total = (mes.apartamento.entrada || 0) + (mes.apartamento.juros || 0);
+
+    let brunoPct = null;
+    let geovanaPct = null;
+    let empate = false;
+    let maior = null;
+
+    if (total > 0) {
+        if (Math.abs(b - g) < 0.005) {
+            brunoPct = 0.5;
+            geovanaPct = 0.5;
+            empate = true;
+        } else if (b > g) {
+            brunoPct = 0.75;
+            geovanaPct = 0.25;
+            maior = 'bruno';
+        } else {
+            brunoPct = 0.25;
+            geovanaPct = 0.75;
+            maior = 'geovana';
+        }
+    }
+
+    const brunoParte = brunoPct === null ? 0 : Math.round(total * brunoPct * 100) / 100;
+    const geovanaParte = total - brunoParte;
+
+    return { total, brunoPct, geovanaPct, brunoParte, geovanaParte, empate, maior };
+}
+
+/* ---------- Renderização ---------- */
+
 function renderMes() {
     atualizarSelector();
     const mes = obterOuCriarMes();
+    const divisao = calcularDivisao(mes);
 
-    // Salário
-    setTexto('salarioMes', Utils.formatarMoeda(mes.salario || 0));
-
-    // Distribuição
-    renderDistribuicao(mes);
-
-    // Gráfico de distribuição
-    desenharGraficoDistribuicao(mes);
-
-    // Cartões de crédito
-    renderCartoes(mes);
-
-    // Débitos automáticos
-    renderDebitos(mes);
-
-    // Controle de gastos
-    renderControleGastos(mes);
-
-    // Histórico
-    renderHistorico();
+    renderApartamento(mes, divisao);
+    PESSOAS.forEach(p => renderPessoa(mes, p, divisao));
+    renderResumoFinal(mes, divisao);
+    renderMensagensFinal(mes, divisao);
 }
 
 function atualizarSelector() {
@@ -71,222 +174,401 @@ function atualizarSelector() {
     setTexto('mesAtualAno', String(controleMensal.ano));
 }
 
-function renderDistribuicao(mes) {
-    const lista = document.getElementById('listaDistribuicao');
-    if (!lista) return;
+function renderApartamento(mes, divisao) {
+    const inEntrada = document.getElementById('apEntrada');
+    const inJuros = document.getElementById('apJuros');
+    if (inEntrada) inEntrada.value = Utils.paraMoedaInput(mes.apartamento.entrada);
+    if (inJuros) inJuros.value = Utils.paraMoedaInput(mes.apartamento.juros);
 
-    const salario = mes.salario || 0;
-    const reembolso = mes.reembolso || 0;
-    const apartamento = mes.divisaoApartamento || 0;
-    const economia = mes.economia || 0;
-    const despesas = Calculos.totalDespesas(mes);
-    const disponivel = Calculos.gastosPessoaisDisponiveis(mes);
+    setTexto('apTotal', Utils.formatarMoeda(divisao.total));
 
-    const itens = [
-        { label: 'Salário', value: salario, classe: '' },
-        { label: 'Reembolso', value: reembolso, classe: disponivel >= 0 ? 'positive' : '' },
-        { label: 'Destino ao Apartamento', value: apartamento, classe: '' },
-        { label: 'Destino à Economia', value: economia, classe: 'positive' },
-        { label: 'Gastos Fixos + Variáveis', value: despesas, classe: 'negative' },
-        { label: 'Disponível para Gastos Pessoais', value: disponivel, classe: disponivel >= 0 ? 'positive' : 'negative' }
+    const brunoPct = divisao.brunoPct === null ? '—' : `${Math.round(divisao.brunoPct * 100)}%`;
+    const geovanaPct = divisao.geovanaPct === null ? '—' : `${Math.round(divisao.geovanaPct * 100)}%`;
+
+    setTexto('splitBrunoPct', brunoPct);
+    setTexto('splitBrunoVal', Utils.formatarMoeda(divisao.brunoParte));
+    setTexto('splitGeovanaPct', geovanaPct);
+    setTexto('splitGeovanaVal', Utils.formatarMoeda(divisao.geovanaParte));
+
+    const boxBruno = document.getElementById('splitBruno');
+    const boxGeo = document.getElementById('splitGeovana');
+    if (boxBruno) boxBruno.classList.toggle('maior', divisao.maior === 'bruno');
+    if (boxGeo) boxGeo.classList.toggle('maior', divisao.maior === 'geovana');
+
+    const note = document.getElementById('splitNote');
+    if (note) note.hidden = !(divisao.empate && divisao.total > 0);
+}
+
+function renderPessoa(mes, pessoa, divisao) {
+    const p = mes[pessoa];
+    renderSalarioCampos(pessoa, p);
+    renderCredito(mes, pessoa, p);
+    renderReembolsos(mes, pessoa, p);
+    renderDebito(mes, pessoa, p);
+    renderResumoPessoa(pessoa, p, divisao);
+}
+
+function renderSalarioCampos(pessoa, p) {
+    const suf = idDe(pessoa);
+    const inSalario = document.getElementById(suf === 'Bruno' ? 'brunoSalarioInput' : 'geoSalarioInput');
+    const inOutras = document.getElementById(suf === 'Bruno' ? 'brunoOutrasInput' : 'geoOutrasInput');
+    if (inSalario) inSalario.value = Utils.paraMoedaInput(p.salario);
+    if (inOutras) inOutras.value = Utils.paraMoedaInput(p.outrasReceitas);
+    setTexto(`${suf === 'Bruno' ? 'bruno' : 'geo'}ReceitasTotal`, Utils.formatarMoeda(totalReceitas(p)));
+}
+
+function renderCredito(mes, pessoa, p) {
+    const suf = idDe(pessoa);
+    const total = totalCredito(p);
+    const fixo = totalCreditoFixo(p);
+    const parcelado = totalCreditoParcelado(p);
+    const reemb = reembolsoRecebido(p);
+    const efetivo = totalEfetivoCredito(p);
+
+    setTexto(`credTotal${suf}`, Utils.formatarMoeda(total));
+    setTexto(`credFixo${suf}`, Utils.formatarMoeda(fixo));
+    setTexto(`credParcelado${suf}`, Utils.formatarMoeda(parcelado));
+    setTexto(`credReemb${suf}`, Utils.formatarMoeda(reemb));
+    setTexto(`credPrevisto${suf}`, Utils.formatarMoeda(reembolsoPrevisto(p)));
+    setTexto(`credEfetivo${suf}`, Utils.formatarMoeda(efetivo));
+
+    const corpo = document.getElementById(`corpoCredito${suf}`);
+    if (!corpo) return;
+
+    corpo.innerHTML = p.credito.length
+        ? p.credito.map(c => `
+            <tr>
+                <td data-label="Descrição">${Utils.escapeHTML(c.descricao)}</td>
+                <td data-label="Valor" class="text-right">${Utils.formatarMoeda(c.valor)}</td>
+                <td data-label="Tipo">${c.tipo === 'parcelado' ? 'Parcelado' : 'Fixo'}</td>
+                <td data-label="Parcelas">${c.quantParcelas || '—'}</td>
+                <td data-label="Atual">${c.parcelaAtual || '—'}</td>
+                <td data-label="Categoria">${Utils.escapeHTML(c.categoria) || '—'}</td>
+                <td data-label="Observação">${Utils.escapeHTML(c.observacao) || '—'}</td>
+                <td data-label="Ações">
+                    <div class="acoes-cell">
+                        ${botaoEditar('credito', c.id)}
+                        ${botaoExcluir('credito', c.id)}
+                    </div>
+                </td>
+            </tr>
+        `).join('')
+        : `<tr><td colspan="8" class="empty-state">Sem gastos de cartão de crédito neste mês.</td></tr>`;
+
+    ligarAcoes(corpo, 'credito', pessoa);
+}
+
+function renderReembolsos(mes, pessoa, p) {
+    const suf = idDe(pessoa);
+    const corpo = document.getElementById(`corpoReembolso${suf}`);
+    if (!corpo) return;
+
+    corpo.innerHTML = p.reembolsos.length
+        ? p.reembolsos.map(r => `
+            <tr>
+                <td data-label="Descrição">${Utils.escapeHTML(r.descricao)}</td>
+                <td data-label="Valor" class="text-right">${Utils.formatarMoeda(r.valor)}</td>
+                <td data-label="Responsável">${Utils.escapeHTML(r.responsavel) || '—'}</td>
+                <td data-label="Status">${badgeReembolso(r.status)}</td>
+                <td data-label="Observação">${Utils.escapeHTML(r.observacao) || '—'}</td>
+                <td data-label="Ações">
+                    <div class="acoes-cell">
+                        ${botaoEditar('reembolso', r.id)}
+                        ${botaoExcluir('reembolso', r.id)}
+                    </div>
+                </td>
+            </tr>
+        `).join('')
+        : `<tr><td colspan="6" class="empty-state">Sem reembolsos neste mês.</td></tr>`;
+
+    ligarAcoes(corpo, 'reembolso', pessoa);
+}
+
+function renderDebito(mes, pessoa, p) {
+    const suf = idDe(pessoa);
+    const total = totalDebito(p);
+    setTexto(`debTotal${suf}`, Utils.formatarMoeda(total));
+
+    const corpo = document.getElementById(`corpoDebito${suf}`);
+    if (!corpo) return;
+
+    corpo.innerHTML = p.debito.length
+        ? p.debito.map(d => `
+            <tr>
+                <td data-label="Descrição">${Utils.escapeHTML(d.descricao)}</td>
+                <td data-label="Valor" class="text-right">${Utils.formatarMoeda(d.valor)}</td>
+                <td data-label="Categoria">${Utils.escapeHTML(d.categoria) || '—'}</td>
+                <td data-label="Data">${Utils.formatarData(d.data)}</td>
+                <td data-label="Observação">${Utils.escapeHTML(d.observacao) || '—'}</td>
+                <td data-label="Ações">
+                    <div class="acoes-cell">
+                        ${botaoEditar('debito', d.id)}
+                        ${botaoExcluir('debito', d.id)}
+                    </div>
+                </td>
+            </tr>
+        `).join('')
+        : `<tr><td colspan="6" class="empty-state">Sem gastos de cartão de débito neste mês.</td></tr>`;
+
+    ligarAcoes(corpo, 'debito', pessoa);
+}
+
+function renderResumoPessoa(pessoa, p, divisao) {
+    const suf = pessoa === 'bruno' ? 'bruno' : 'geo';
+    const receitas = totalReceitas(p);
+    const totalCred = totalCredito(p);
+    const reemb = reembolsoRecebido(p);
+    const efetivo = totalEfetivoCredito(p);
+    const deb = totalDebito(p);
+    const gastos = totalGastos(p);
+    const anterior = saldoAntesApto(p);
+    const parteApto = pessoa === 'bruno' ? divisao.brunoParte : divisao.geovanaParte;
+    const final = saldoFinal(p, parteApto);
+
+    setTexto(`${suf}Salario`, Utils.formatarMoeda(receitas));
+    setTexto(`${suf}Credito`, Utils.formatarMoeda(totalCred));
+    setTexto(`${suf}Reembolsos`, Utils.formatarMoeda(reemb));
+    setTexto(`${suf}Efetivo`, Utils.formatarMoeda(efetivo));
+    setTexto(`${suf}Debito`, Utils.formatarMoeda(deb));
+    setTexto(`${suf}Gastos`, Utils.formatarMoeda(gastos));
+    setTexto(`${suf}SaldAntes`, Utils.formatarMoeda(anterior));
+    setTexto(`${suf}Apto`, Utils.formatarMoeda(parteApto));
+    setTexto(`${suf}SaldoFinal`, Utils.formatarMoeda(final));
+
+    const elSaldoAntes = document.getElementById(`${suf}SaldAntes`);
+    const elSaldoFinal = document.getElementById(`${suf}SaldoFinal`);
+    if (elSaldoAntes) {
+        elSaldoAntes.classList.toggle('positive', anterior >= 0);
+        elSaldoAntes.classList.toggle('negative', anterior < 0);
+    }
+    if (elSaldoFinal) {
+        elSaldoFinal.classList.toggle('positive', final >= 0);
+        elSaldoFinal.classList.toggle('negative', final < 0);
+    }
+}
+
+function renderResumoFinal(mes, divisao) {
+    const corpo = document.getElementById('corpoResumoFinal');
+    if (!corpo) return;
+
+    const linhas = [
+        ['Salário', totalReceitas(mes.bruno), totalReceitas(mes.geovana)],
+        ['Crédito', totalCredito(mes.bruno), totalCredito(mes.geovana)],
+        ['Reembolsos (recebidos)', reembolsoRecebido(mes.bruno), reembolsoRecebido(mes.geovana)],
+        ['Débito', totalDebito(mes.bruno), totalDebito(mes.geovana)],
+        ['Total de gastos', totalGastos(mes.bruno), totalGastos(mes.geovana)],
+        ['Saldo antes do apartamento', saldoAntesApto(mes.bruno), saldoAntesApto(mes.geovana)],
+        ['Divisão do apartamento', divisao.brunoParte, divisao.geovanaParte],
+        ['Saldo final', saldoFinal(mes.bruno, divisao.brunoParte), saldoFinal(mes.geovana, divisao.geovanaParte)]
     ];
 
-    lista.innerHTML = itens.map(item => `
-        <div class="distribution-item">
-            <span class="label">${item.label}</span>
-            <span class="value ${item.classe}">${Utils.formatarMoeda(item.value)}</span>
-        </div>
+    corpo.innerHTML = linhas.map(([label, vb, vg]) => `
+        <tr>
+            <td>${label}</td>
+            <td data-label="Bruno" class="text-right">${Utils.formatarMoeda(vb)}</td>
+            <td data-label="Geovana" class="text-right">${Utils.formatarMoeda(vg)}</td>
+        </tr>
     `).join('');
 }
 
-function desenharGraficoDistribuicao(mes) {
-    const canvas = document.getElementById('chartDistribuicao');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+function renderMensagensFinal(mes, divisao) {
+    const box = document.getElementById('mensagensSaldo');
+    if (!box) return;
 
-    const tema = document.documentElement.getAttribute('data-theme') || 'light';
-    const cores = getCoresTema(tema);
-
-    const largura = canvas.parentElement.clientWidth || 300;
-    canvas.width = largura;
-    canvas.height = 250;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const data = [
-        { label: 'Apartamento', value: mes.divisaoApartamento || 0, cor: cores.primary },
-        { label: 'Economia', value: mes.economia || 0, cor: cores.success },
-        { label: 'Despesas', value: Calculos.totalDespesas(mes), cor: cores.danger },
-        { label: 'Disponível', value: Math.max(0, Calculos.gastosPessoaisDisponiveis(mes)), cor: cores.secondary }
-    ];
-
-    const total = data.reduce((s, d) => s + d.value, 0);
-    if (total <= 0) {
-        ctx.fillStyle = cores.textSecundario;
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Sem dados para o mês', canvas.width / 2, canvas.height / 2);
-        return;
-    }
-
-    // Gráfico de pizza
-    const centroX = canvas.width / 2;
-    const centroY = canvas.height / 2 - 10;
-    const raio = Math.min(centroX - 10, centroY - 10, 90);
-
-    let anguloInicio = -Math.PI / 2;
-
-    data.forEach(d => {
-        if (d.value <= 0) return;
-        const fracao = d.value / total;
-        const anguloFim = anguloInicio + fracao * 2 * Math.PI;
-
-        ctx.beginPath();
-        ctx.moveTo(centroX, centroY);
-        ctx.arc(centroX, centroY, raio, anguloInicio, anguloFim);
-        ctx.closePath();
-        ctx.fillStyle = d.cor;
-        ctx.fill();
-
-        // Borda branca entre fatias
-        ctx.strokeStyle = cores.fundo;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        anguloInicio = anguloFim;
-    });
-
-    // Legenda
-    let y = 8;
-    ctx.font = '12px sans-serif';
-    data.forEach(d => {
-        const fracao = total > 0 ? (d.value / total) * 100 : 0;
-        ctx.fillStyle = d.cor;
-        ctx.fillRect(8, y, 12, 12);
-        ctx.fillStyle = cores.texto;
-        ctx.textAlign = 'left';
-        ctx.fillText(`${d.label}: ${fracao.toFixed(1)}%`, 26, y + 10);
-        y += 20;
-    });
-
-    // Título
-    ctx.fillStyle = cores.textSecundario;
-    ctx.textAlign = 'center';
-    ctx.font = '12px sans-serif';
-    ctx.fillText(`Total alocado: ${Utils.formatarMoeda(total)}`, canvas.width / 2, canvas.height - 4);
-}
-
-function renderCartoes(mes) {
-    const grid = document.getElementById('gridCartoesCredito');
-    if (!grid) return;
-
-    if (!mes.cartoesCredito || mes.cartoesCredito.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <p class="empty-icon">💳</p>
-                <p class="empty-title">Nenhum cartão de crédito</p>
-                <p class="empty-text">Os cartões aparecerão aqui quando cadastrados.</p>
-            </div>
+    box.innerHTML = PESSOAS.map(pessoa => {
+        const nome = nomePessoa(pessoa);
+        const parte = pessoa === 'bruno' ? divisao.brunoParte : divisao.geovanaParte;
+        const final = saldoFinal(mes[pessoa], parte);
+        const negativo = final < 0;
+        const texto = `Após pagar os gastos do mês e sua parte do apartamento, o ${nome} ficará com ${Utils.formatarMoeda(final)}.`;
+        return `
+            <p class="saldo-mensagem ${negativo ? 'saldo-negativo' : 'saldo-positivo'}">
+                ${texto}
+                ${negativo ? ` <strong>Atenção:</strong> saldo negativo — não há valor suficiente para cobrir as despesas previstas.` : ''}
+            </p>
         `;
-        return;
-    }
-
-    grid.innerHTML = mes.cartoesCredito.map(cc => `
-        <div class="credit-card">
-            <div class="cc-header">
-                <span class="cc-name">${Utils.escapeHTML(cc.nome)}</span>
-                <span class="cc-total">${Utils.formatarMoeda(cc.totalPagar)}</span>
-            </div>
-            <div class="cc-items">
-                ${(cc.parcelas || []).map(p =>
-                    `<div>${Utils.escapeHTML(p.descricao)} — ${Utils.formatarMoeda(p.valor)}${p.quantParcelas ? ` (${p.quantParcelas})` : ''}</div>`
-                ).join('') || 'Sem parcelas'}
-                ${cc.reembolso ? `<div style="margin-top:8px;color:#ffd700"><strong>Reembolso: ${Utils.formatarMoeda(cc.reembolso)}</strong></div>` : ''}
-            </div>
-        </div>
-    `).join('');
+    }).join('');
 }
 
-function renderDebitos(mes) {
-    const corpo = document.getElementById('corpoTabelaDebitos');
-    if (!corpo) return;
+/* ---------- Utilitários de UI ---------- */
 
-    const debitos = mes.debitosAutomaticos || [];
-    corpo.innerHTML = debitos.length
-        ? debitos.map(d => `
-            <tr>
-                <td>${Utils.escapeHTML(d.descricao)}</td>
-                <td class="text-right">${Utils.formatarMoeda(d.valor)}</td>
-            </tr>
-        `).join('')
-        : `<tr><td colspan="2" class="empty-state">Sem débitos automáticos neste mês.</td></tr>`;
+function botaoEditar(tipo, id) {
+    return `
+        <button class="btn-acoes" data-editar="${id}" data-tipo="${tipo}" title="Editar" aria-label="Editar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+        </button>`;
 }
 
-function renderControleGastos(mes) {
-    const limiteInput = document.getElementById('limiteGastos');
-    const gastosInput = document.getElementById('gastosRealizados');
-    const statusEl = document.getElementById('statusOrcamento');
-
-    const limite = mes.gastosPessoaisDisponiveis || 0;
-    const gastos = mes.gastosRealizados || 0;
-
-    if (limiteInput) {
-        limiteInput.value = Utils.paraMoedaInput(limite);
-    }
-    if (gastosInput) {
-        gastosInput.value = Utils.paraMoedaInput(gastos);
-    }
-
-    if (statusEl) {
-        renderStatusOrcamento(statusEl, limite, gastos);
-    }
+function botaoExcluir(tipo, id) {
+    return `
+        <button class="btn-acoes" data-excluir="${id}" data-tipo="${tipo}" title="Excluir" aria-label="Excluir">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+        </button>`;
 }
 
-function renderStatusOrcamento(el, limite, gastos) {
-    const saldo = limite - gastos;
-    const percentual = limite > 0 ? (gastos / limite) * 100 : 0;
+function badgeReembolso(status) {
+    if (status === 'recebido') return '<span class="status-badge recebido">Recebido</span>';
+    if (status === 'cancelado') return '<span class="status-badge cancelado">Cancelado</span>';
+    return '<span class="status-badge previsto">Previsto</span>';
+}
 
-    let estado = 'ok';
-    let mensagem;
-    if (saldo < 0) {
-        estado = 'den-danger';
-        mensagem = `Atenção! Gastou ${Utils.formatarMoeda(Math.abs(saldo))} acima do limite (${percentual.toFixed(0)}% do orçamento)`;
-    } else if (percentual >= 0.8) {
-        estado = 'den-warn';
-        mensagem = `Cuidado! Usou ${percentual.toFixed(0)}% do limite. Restam ${Utils.formatarMoeda(saldo)}`;
+function ligarAcoes(corpo, tipo, pessoa) {
+    corpo.querySelectorAll('[data-editar]').forEach(btn => {
+        btn.addEventListener('click', () => abrirEdicao(tipo, pessoa, btn.dataset.editar));
+    });
+    corpo.querySelectorAll('[data-excluir]').forEach(btn => {
+        btn.addEventListener('click', () => excluirLancamento(tipo, pessoa, btn.dataset.excluir));
+    });
+}
+
+/* ---------- Modals: novo / editar ---------- */
+
+function abrirNovo(tipo, pessoa) {
+    const nome = nomePessoa(pessoa);
+    const rotulo = rotuloTipo(tipo);
+
+    if (tipo === 'credito') {
+        document.getElementById('formCredito').reset();
+        document.getElementById('credId').value = '';
+        document.getElementById('credPessoa').value = pessoa;
+        setTexto('modalCredito-title', `Novo Gasto no ${rotulo} — ${nome}`);
+        window.App.abrirModal('modalCredito');
+    } else if (tipo === 'debito') {
+        document.getElementById('formDebito').reset();
+        document.getElementById('debId').value = '';
+        document.getElementById('debPessoa').value = pessoa;
+        setTexto('modalDebito-title', `Novo Gasto no ${rotulo} — ${nome}`);
+        window.App.abrirModal('modalDebito');
     } else {
-        mensagem = `Dentro do orçamento. Usou ${percentual.toFixed(0)}% do limite. Restam ${Utils.formatarMoeda(saldo)}`;
+        document.getElementById('formReembolso').reset();
+        document.getElementById('reembId').value = '';
+        document.getElementById('reembPessoa').value = pessoa;
+        setTexto('modalReembolso-title', `Novo Reembolso do Cartão — ${nome}`);
+        window.App.abrirModal('modalReembolso');
     }
-
-    el.className = `budget-status ${estado}`;
-    el.textContent = mensagem;
 }
 
-function renderHistorico() {
-    const corpo = document.getElementById('corpoTabelaHistorico');
-    if (!corpo) return;
+function abrirEdicao(tipo, pessoa, id) {
+    const nome = nomePessoa(pessoa);
+    const mes = obterOuCriarMes();
+    const lista = obterLista(mes, tipo, pessoa);
+    const item = lista.find(i => String(i.id) === String(id));
+    if (!item) return;
 
-    const meses = Storage.getMeses();
-    const lista = [...meses].sort((a, b) => a.id.localeCompare(b.id)).reverse();
-
-    corpo.innerHTML = lista.length
-        ? lista.map(m => `
-            <tr>
-                <td>${Utils.escapeHTML(m.nome)}</td>
-                <td class="text-right">${Utils.formatarMoeda(m.salario || 0)}</td>
-                <td class="text-right">${Utils.formatarMoeda(m.divisaoApartamento || 0)}</td>
-                <td class="text-right">${Utils.formatarMoeda(m.economia || 0)}</td>
-                <td class="text-right">${Utils.formatarMoeda(Calculos.totalDespesas(m))}</td>
-            </tr>
-        `).join('')
-        : '<tr><td colspan="5" class="empty-state">Nenhum mês cadastrado ainda.</td></tr>';
+    if (tipo === 'credito') {
+        document.getElementById('credId').value = id;
+        document.getElementById('credPessoa').value = pessoa;
+        document.getElementById('credDescricao').value = item.descricao || '';
+        document.getElementById('credValor').value = Utils.paraMoedaInput(item.valor);
+        document.getElementById('credTipo').value = item.tipo === 'parcelado' ? 'parcelado' : 'fixo';
+        document.getElementById('credQuant').value = item.quantParcelas || '';
+        document.getElementById('credAtual').value = item.parcelaAtual || '';
+        document.getElementById('credCategoria').value = item.categoria || '';
+        document.getElementById('credObs').value = item.observacao || '';
+        setTexto('modalCredito-title', `Editar Gasto no ${rotuloTipo(tipo)} — ${nome}`);
+        window.App.abrirModal('modalCredito');
+    } else if (tipo === 'debito') {
+        document.getElementById('debId').value = id;
+        document.getElementById('debPessoa').value = pessoa;
+        document.getElementById('debDescricao').value = item.descricao || '';
+        document.getElementById('debValor').value = Utils.paraMoedaInput(item.valor);
+        document.getElementById('debCategoria').value = item.categoria || '';
+        document.getElementById('debData').value = item.data || '';
+        document.getElementById('debObs').value = item.observacao || '';
+        setTexto('modalDebito-title', `Editar Gasto no ${rotuloTipo(tipo)} — ${nome}`);
+        window.App.abrirModal('modalDebito');
+    } else {
+        document.getElementById('reembId').value = id;
+        document.getElementById('reembPessoa').value = pessoa;
+        document.getElementById('reembDescricao').value = item.descricao || '';
+        document.getElementById('reembValor').value = Utils.paraMoedaInput(item.valor);
+        document.getElementById('reembResponsavel').value = item.responsavel || '';
+        document.getElementById('reembStatus').value = item.status || 'previsto';
+        document.getElementById('reembObs').value = item.observacao || '';
+        setTexto('modalReembolso-title', `Editar Reembolso do Cartão — ${nome}`);
+        window.App.abrirModal('modalReembolso');
+    }
 }
 
-function configurarEventos() {
-    // Máscara de moeda nos campos monetários
+function lerNumero(id) {
+    const el = document.getElementById(id);
+    return el ? Utils.moedaParaNumero(el.value) : 0;
+}
+
+/* ---------- Exclusão com confirmação ---------- */
+
+function excluirLancamento(tipo, pessoa, id) {
+    const mes = obterOuCriarMes();
+    const lista = obterLista(mes, tipo, pessoa);
+    const item = lista.find(i => String(i.id) === String(id));
+    if (!item) return;
+
+    abrirConfirmarExclusao(
+        `Excluir ${rotuloTipo(tipo)}?`,
+        `Deseja excluir "${Utils.escapeHTML(item.descricao)}" do ${rotuloTipo(tipo)} de ${nomePessoa(pessoa)}?`,
+        () => {
+            const mesAtual = obterOuCriarMes();
+            const arr = obterLista(mesAtual, tipo, pessoa);
+            const novaLista = arr.filter(i => String(i.id) !== String(id));
+            if (tipo === 'credito') mesAtual[pessoa].credito = novaLista;
+            else if (tipo === 'debito') mesAtual[pessoa].debito = novaLista;
+            else mesAtual[pessoa].reembolsos = novaLista;
+            Storage.salvarMes(mesAtual);
+            Toast.success('Lançamento excluído.');
+            renderMes();
+        }
+    );
+}
+
+function abrirConfirmarExclusao(titulo, mensagem, aoConfirmar) {
+    confirmarExclusaoCallback = aoConfirmar;
+    if (document.getElementById('modalConfirmarTitle')) {
+        document.getElementById('modalConfirmarTitle').textContent = titulo;
+    }
+    if (document.getElementById('modalConfirmarMensagem')) {
+        document.getElementById('modalConfirmarMensagem').textContent = mensagem;
+    }
+    window.App.abrirModal('modalConfirmarExclusao');
+}
+
+function configurarConfirmarExclusao() {
+    const btn = document.getElementById('btnConfirmarExclusao');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const acao = confirmarExclusaoCallback;
+        confirmarExclusaoCallback = null;
+        window.App.fecharModal(document.getElementById('modalConfirmarExclusao'));
+        if (typeof acao === 'function') acao();
+    });
+
+    const modal = document.getElementById('modalConfirmarExclusao');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) confirmarExclusaoCallback = null;
+        });
+        modal.querySelectorAll('[data-fechar-modal]').forEach(b => {
+            b.addEventListener('click', () => {
+                confirmarExclusaoCallback = null;
+            });
+        });
+    }
+}
+
+/* ---------- Formulários e eventos ---------- */
+
+function configurarFormularios() {
     const camposMoeda = [
-        'limiteGastos', 'gastosRealizados',
-        'salarioInput', 'reembolsoInput', 'divisaoApartamentoInput',
-        'economiaInput', 'gastosFixosInput', 'gastosVariaveisInput'
+        'apEntrada', 'apJuros',
+        'brunoSalarioInput', 'brunoOutrasInput',
+        'geoSalarioInput', 'geoOutrasInput',
+        'credValor', 'debValor', 'reembValor'
     ];
     camposMoeda.forEach(id => {
         const el = document.getElementById(id);
@@ -296,68 +578,151 @@ function configurarEventos() {
     // Navegação entre meses
     const btnAnterior = document.getElementById('btnMesAnterior');
     const btnProximo = document.getElementById('btnMesProximo');
+    if (btnAnterior) btnAnterior.addEventListener('click', () => navegarMes(-1));
+    if (btnProximo) btnProximo.addEventListener('click', () => navegarMes(1));
 
-    if (btnAnterior) {
-        btnAnterior.addEventListener('click', () => {
-            navegarMes(-1);
-        });
-    }
+    // Botões "novo"
+    const alvos = [
+        ['btnNovoCreditoBruno', 'credito', 'bruno'],
+        ['btnNovoCreditoGeo', 'credito', 'geovana'],
+        ['btnNovoDebitoBruno', 'debito', 'bruno'],
+        ['btnNovoDebitoGeo', 'debito', 'geovana'],
+        ['btnNovoReembolsoBruno', 'reembolso', 'bruno'],
+        ['btnNovoReembolsoGeo', 'reembolso', 'geovana']
+    ];
+    alvos.forEach(([idBtn, tipo, pessoa]) => {
+        const el = document.getElementById(idBtn);
+        if (el) el.addEventListener('click', () => abrirNovo(tipo, pessoa));
+    });
 
-    if (btnProximo) {
-        btnProximo.addEventListener('click', () => {
-            navegarMes(1);
-        });
-    }
+    // Autosave de campos fixos (salários, receitas e apartamento)
+    const camposAutosave = [
+        ['brunoSalarioInput', 'salario', 'bruno'],
+        ['brunoOutrasInput', 'outrasReceitas', 'bruno'],
+        ['geoSalarioInput', 'salario', 'geovana'],
+        ['geoOutrasInput', 'outrasReceitas', 'geovana'],
+        ['apEntrada', 'entrada', 'apartamento'],
+        ['apJuros', 'juros', 'apartamento']
+    ];
+    camposAutosave.forEach(([idInput, campo, alvo]) => {
+        const el = document.getElementById(idInput);
+        if (el) {
+            el.addEventListener('change', () => {
+                const mes = obterOuCriarMes();
+                const valor = Utils.moedaParaNumero(el.value);
+                if (alvo === 'apartamento') mes.apartamento[campo] = valor;
+                else mes[alvo][campo] = valor;
+                Storage.salvarMes(mes);
+                renderMes();
+            });
+        }
+    });
 
-    // Editar salário
-    const btnEditar = document.getElementById('btnEditarSalario');
-    if (btnEditar) {
-        btnEditar.addEventListener('click', () => {
-            const mes = obterOuCriarMes();
-            document.getElementById('salarioInput').value = Utils.paraMoedaInput(mes.salario);
-            document.getElementById('reembolsoInput').value = Utils.paraMoedaInput(mes.reembolso);
-            document.getElementById('divisaoApartamentoInput').value = Utils.paraMoedaInput(mes.divisaoApartamento);
-            document.getElementById('economiaInput').value = Utils.paraMoedaInput(mes.economia);
-            document.getElementById('gastosFixosInput').value = Utils.paraMoedaInput(mes.gastosFixos);
-            document.getElementById('gastosVariaveisInput').value = Utils.paraMoedaInput(mes.gastosVariaveis);
-            window.App.abrirModal('modalSalario');
-        });
-    }
-
-    const formSalario = document.getElementById('formSalario');
-    if (formSalario) {
-        formSalario.addEventListener('submit', (e) => {
+    // Formulário de crédito
+    const formCredito = document.getElementById('formCredito');
+    if (formCredito) {
+        formCredito.addEventListener('submit', (e) => {
             e.preventDefault();
             const mes = obterOuCriarMes();
+            const id = document.getElementById('credId').value;
+            const pessoa = document.getElementById('credPessoa').value;
+            const descricao = document.getElementById('credDescricao').value.trim();
+            const valor = lerNumero('credValor');
+            if (!descricao || valor <= 0) return;
 
-            mes.salario = Utils.moedaParaNumero(document.getElementById('salarioInput').value);
-            mes.reembolso = Utils.moedaParaNumero(document.getElementById('reembolsoInput').value);
-            mes.divisaoApartamento = Utils.moedaParaNumero(document.getElementById('divisaoApartamentoInput').value);
-            mes.economia = Utils.moedaParaNumero(document.getElementById('economiaInput').value);
-            mes.gastosFixos = Utils.moedaParaNumero(document.getElementById('gastosFixosInput').value);
-            mes.gastosVariaveis = Utils.moedaParaNumero(document.getElementById('gastosVariaveisInput').value);
-            mes.gastosPessoaisDisponiveis = Calculos.gastosPessoaisDisponiveis(mes);
+            const dados = {
+                descricao,
+                valor,
+                tipo: document.getElementById('credTipo').value,
+                quantParcelas: document.getElementById('credQuant').value ? Number(document.getElementById('credQuant').value) : null,
+                parcelaAtual: document.getElementById('credAtual').value ? Number(document.getElementById('credAtual').value) : null,
+                categoria: document.getElementById('credCategoria').value.trim(),
+                observacao: document.getElementById('credObs').value.trim()
+            };
+
+            if (id) {
+                const lista = mes[pessoa].credito;
+                const idx = lista.findIndex(i => String(i.id) === String(id));
+                if (idx !== -1) lista[idx] = { ...lista[idx], ...dados };
+            } else {
+                mes[pessoa].credito.push({ id: Utils.gerarId(), ...dados });
+            }
 
             Storage.salvarMes(mes);
-            document.getElementById('modalSalario').classList.remove('active');
+            document.getElementById('modalCredito').classList.remove('active');
+            Toast.success('Gasto de crédito salvo.');
             renderMes();
         });
     }
 
-    // Controle de gastos (atualiza ao digitar)
-    const limiteInput = document.getElementById('limiteGastos');
-    const gastosInput = document.getElementById('gastosRealizados');
+    // Formulário de débito
+    const formDebito = document.getElementById('formDebito');
+    if (formDebito) {
+        formDebito.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const mes = obterOuCriarMes();
+            const id = document.getElementById('debId').value;
+            const pessoa = document.getElementById('debPessoa').value;
+            const descricao = document.getElementById('debDescricao').value.trim();
+            const valor = lerNumero('debValor');
+            if (!descricao || valor <= 0) return;
 
-    const salvarGastos = () => {
-        const mes = obterOuCriarMes();
-        mes.gastosPessoaisDisponiveis = Utils.moedaParaNumero(limiteInput.value);
-        mes.gastosRealizados = Utils.moedaParaNumero(gastosInput.value);
-        Storage.salvarMes(mes);
-        renderMes();
-    };
+            const dados = {
+                descricao,
+                valor,
+                categoria: document.getElementById('debCategoria').value.trim(),
+                data: document.getElementById('debData').value || null,
+                observacao: document.getElementById('debObs').value.trim()
+            };
 
-    if (gastosInput) {
-        gastosInput.addEventListener('change', salvarGastos);
+            if (id) {
+                const lista = mes[pessoa].debito;
+                const idx = lista.findIndex(i => String(i.id) === String(id));
+                if (idx !== -1) lista[idx] = { ...lista[idx], ...dados };
+            } else {
+                mes[pessoa].debito.push({ id: Utils.gerarId(), ...dados });
+            }
+
+            Storage.salvarMes(mes);
+            document.getElementById('modalDebito').classList.remove('active');
+            Toast.success('Gasto de débito salvo.');
+            renderMes();
+        });
+    }
+
+    // Formulário de reembolso
+    const formReembolso = document.getElementById('formReembolso');
+    if (formReembolso) {
+        formReembolso.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const mes = obterOuCriarMes();
+            const id = document.getElementById('reembId').value;
+            const pessoa = document.getElementById('reembPessoa').value;
+            const descricao = document.getElementById('reembDescricao').value.trim();
+            const valor = lerNumero('reembValor');
+            if (!descricao || valor <= 0) return;
+
+            const dados = {
+                descricao,
+                valor,
+                responsavel: document.getElementById('reembResponsavel').value.trim(),
+                status: document.getElementById('reembStatus').value,
+                observacao: document.getElementById('reembObs').value.trim()
+            };
+
+            if (id) {
+                const lista = mes[pessoa].reembolsos;
+                const idx = lista.findIndex(i => String(i.id) === String(id));
+                if (idx !== -1) lista[idx] = { ...lista[idx], ...dados };
+            } else {
+                mes[pessoa].reembolsos.push({ id: Utils.gerarId(), ...dados });
+            }
+
+            Storage.salvarMes(mes);
+            document.getElementById('modalReembolso').classList.remove('active');
+            Toast.success('Reembolso salvo.');
+            renderMes();
+        });
     }
 }
 
@@ -372,29 +737,6 @@ function navegarMes(delta) {
         controleMensal.ano--;
     }
     renderMes();
-}
-
-function getCoresTema(tema) {
-    if (tema === 'dark') {
-        return {
-            primary: '#3a7bd5',
-            success: '#2dd4a7',
-            danger: '#f27272',
-            secondary: '#94a3b8',
-            fundo: '#1e293b',
-            texto: '#e5e7eb',
-            textSecundario: '#94a3b8'
-        };
-    }
-    return {
-        primary: '#1a3a5f',
-        success: '#047857',
-        danger: '#b91c1c',
-        secondary: '#6b7280',
-        fundo: '#ffffff',
-        texto: '#1f2937',
-        textSecundario: '#6b7280'
-    };
 }
 
 function setTexto(id, texto) {

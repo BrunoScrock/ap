@@ -60,6 +60,7 @@ const DADOS_INICIAIS = {
 
     itensCompra: [],
 
+    /* Seed antigo da aba Mensal (formato anterior — removido nesta versao)
     meses: [
         {
             id: '2026-06',
@@ -216,4 +217,7 @@ const DADOS_INICIAIS = {
             gastosRealizados: 0
         }
     ]
+    */
+
+    meses: [],
 };
