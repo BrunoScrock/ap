@@ -31,8 +31,18 @@ function renderEconomias() {
         .filter(e => e.destino === 'pagamento-balao')
         .reduce((soma, e) => soma + (e.valor || 0), 0);
 
+    const totalEstimadoItens = itens.reduce((soma, i) => soma + (i.valorEstimado || 0), 0);
+    const totalGuardadoItens = itens.reduce((soma, i) => soma + (i.valorGuardado || 0), 0);
+    const totalFaltaItens = itens.reduce(
+        (soma, i) => soma + Math.max(0, (i.valorEstimado || 0) - (i.valorGuardado || 0)),
+        0
+    );
+
     setTexto('totalGuardadoEconomias', Utils.formatarMoeda(totalGuardado));
     setTexto('valorBalao2026', Utils.formatarMoeda(balao2026));
+    setTexto('totalEstimadoItens', Utils.formatarMoeda(totalEstimadoItens));
+    setTexto('guardadoItens', Utils.formatarMoeda(totalGuardadoItens));
+    setTexto('faltaItens', Utils.formatarMoeda(totalFaltaItens));
 
     // Tabela de economias
     if (corpo) {
@@ -80,12 +90,9 @@ function renderEconomias() {
                 const restante = Calculos.valorRestanteCompra(item);
                 const pct = Math.min(percent, 100);
                 let statusClass, statusText;
-                if (item.status === 'comprado') {
+                if (item.status === 'comprado' || item.status === 'concluido') {
                     statusClass = 'comprado';
                     statusText = 'Comprado';
-                } else if (item.status === 'concluido') {
-                    statusClass = 'concluido';
-                    statusText = 'Concluído';
                 } else {
                     statusClass = 'em_andamento';
                     statusText = 'Em andamento';
@@ -192,7 +199,7 @@ function abrirEdicaoItem(id) {
     document.getElementById('itemNome').value = i.nome || '';
     document.getElementById('itemValorEstimado').value = Utils.paraMoedaInput(i.valorEstimado);
     document.getElementById('itemValorGuardado').value = Utils.paraMoedaInput(i.valorGuardado);
-    document.getElementById('itemStatus').value = i.status || 'em_andamento';
+    document.getElementById('itemStatus').value = i.status === 'concluido' ? 'comprado' : (i.status || 'em_andamento');
     document.getElementById('itemLink').value = i.link || '';
     setTexto('modalItem-title', 'Editar Item para Compra');
     window.App.abrirModal('modalItem');

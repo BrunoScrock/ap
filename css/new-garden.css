@@ -649,6 +649,20 @@ body {
     color: var(--text-secondary);
 }
 
+/* Tabela "Valores Guardados" centralizada */
+#tabelaEconomias th,
+#tabelaEconomias td {
+    text-align: center;
+}
+
+#tabelaEconomias td.text-right {
+    text-align: center;
+}
+
+#tabelaEconomias .acoes-cell {
+    justify-content: center;
+}
+
 @media (max-width: 599px) {
     .bottom-nav {
         position: fixed;
