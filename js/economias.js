@@ -12,6 +12,13 @@ function tipoEconomiaLabel(destino) {
     return destino === 'pagamento-balao' ? 'Balão' : 'Guardar dinheiro';
 }
 
+function linkSeguro(url) {
+    if (!url) return '';
+    const texto = String(url).trim();
+    if (!/^https?:\/\//i.test(texto)) return '';
+    return Utils.escapeHTML(texto).replace(/"|'/g, '');
+}
+
 function renderEconomias() {
     const economias = Storage.getEconomias();
     const itens = Storage.getItensCompra();
@@ -86,7 +93,12 @@ function renderEconomias() {
                 return `
                     <div class="item-card">
                         <div class="item-card-header">
-                            <div class="item-name">${Utils.escapeHTML(item.nome)}</div>
+                            <div class="item-name">
+                                ${Utils.escapeHTML(item.nome)}
+                                ${item.link ? `<a class="item-link" href="${linkSeguro(item.link)}" target="_blank" rel="noopener noreferrer nofollow" title="Abrir produto" aria-label="Abrir link do produto">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                </a>` : ''}
+                            </div>
                             <span class="item-status-badge ${statusClass}">${statusText}</span>
                         </div>
                         <div class="item-values">
@@ -181,6 +193,7 @@ function abrirEdicaoItem(id) {
     document.getElementById('itemValorEstimado').value = Utils.paraMoedaInput(i.valorEstimado);
     document.getElementById('itemValorGuardado').value = Utils.paraMoedaInput(i.valorGuardado);
     document.getElementById('itemStatus').value = i.status || 'em_andamento';
+    document.getElementById('itemLink').value = i.link || '';
     setTexto('modalItem-title', 'Editar Item para Compra');
     window.App.abrirModal('modalItem');
 }
@@ -300,14 +313,15 @@ function configurarFormularios() {
             const valorEstimado = Utils.moedaParaNumero(document.getElementById('itemValorEstimado').value);
             const valorGuardado = Utils.moedaParaNumero(document.getElementById('itemValorGuardado').value);
             const status = document.getElementById('itemStatus').value;
+            const link = document.getElementById('itemLink').value.trim();
 
             if (!nome || !valorEstimado) return;
 
             if (id) {
-                Storage.atualizarItemCompra(id, { nome, valorEstimado, valorGuardado, status });
+                Storage.atualizarItemCompra(id, { nome, valorEstimado, valorGuardado, status, link });
                 Toast.success('Item atualizado.');
             } else {
-                Storage.adicionarItemCompra({ nome, valorEstimado, valorGuardado, status });
+                Storage.adicionarItemCompra({ nome, valorEstimado, valorGuardado, status, link });
             }
 
             document.getElementById('modalItem').classList.remove('active');

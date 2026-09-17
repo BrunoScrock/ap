@@ -596,6 +596,59 @@ body {
     display: none;
 }
 
+/* Blocos de valores: fundo suave atras dos numeros */
+.card-value {
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 4px 0;
+    padding: 4px 12px;
+    border-radius: 10px;
+    background-color: color-mix(in srgb, var(--primary) 9%, transparent);
+    white-space: normal;
+}
+
+.card-stat .card-value {
+    white-space: normal;
+}
+
+.card-value.positive {
+    background-color: color-mix(in srgb, var(--success) 12%, transparent);
+}
+
+.card-value.negative {
+    background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.resumos-grid .card-stat.highlight-final .card-value {
+    background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+/* Link do produto nos itens para compra */
+.item-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-left: 6px;
+    border-radius: 6px;
+    color: var(--primary);
+    background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.item-link:hover {
+    background-color: color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.label-opcional {
+    font-weight: 400;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
 @media (max-width: 599px) {
     .bottom-nav {
         position: fixed;
@@ -616,7 +669,7 @@ body {
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 900px) {
     .app-shell {
         max-width: none;
         margin: 0;
