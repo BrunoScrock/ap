@@ -141,6 +141,11 @@ body::before {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+}
+
+.header-title {
+    min-width: 0;
 }
 
 .logo-icon {
@@ -159,9 +164,12 @@ body::before {
 }
 
 .header-title h1 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .header-subtitle {

@@ -6,6 +6,21 @@
    O menu fica sempre fixo EMBBAIXO (horizontal),
    em qualquer tamanho de tela. */
 
+/* Telas muitos pequenas: título do cabeçalho mais enxuto */
+@media (max-width: 399px) {
+    .header-title h1 {
+        font-size: 13px;
+    }
+
+    .header-subtitle {
+        font-size: 11px;
+    }
+
+    .app-header {
+        padding: 0 12px;
+    }
+}
+
 /* Tablet (600px+) */
 @media (min-width: 600px) {
     .app-shell {
