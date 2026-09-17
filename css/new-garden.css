@@ -1,0 +1,554 @@
+/* ==========================================================
+   NEW GARDEN — DESIGN SYSTEM (21st.dev / shadcn inspired)
+   Camada final de override. Carregada por ULTIMO em todas as
+   paginas: redefine tokens e polui os componentes com um
+   visual profissional, limpo e consistente.
+   ========================================================== */
+
+/* ==========================================
+   TOKENS (tema claro)
+   ========================================== */
+
+:root {
+    --primary: #0f766e;
+    --primary-dark: #115e59;
+    --primary-light: #14b8a6;
+    --success: #16a34a;
+    --success-light: #22c55e;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --yellow: #eab308;
+
+    --bg: #fafaf9;
+    --bg-card: #ffffff;
+    --bg-muted: #f5f5f4;
+    --bg-blob-a: rgba(20, 184, 166, 0.12);
+    --bg-blob-b: rgba(22, 163, 74, 0.10);
+    --bg-blob-c: rgba(217, 119, 6, 0.08);
+
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --text-muted: #a8a29e;
+    --border: #e7e5e4;
+
+    --ring: rgba(15, 118, 110, 0.35);
+
+    --shadow: 0 1px 2px rgba(28, 25, 23, 0.05), 0 1px 3px rgba(28, 25, 23, 0.06);
+    --shadow-lg: 0 4px 8px rgba(28, 25, 23, 0.06), 0 14px 28px rgba(28, 25, 23, 0.10);
+
+    --radius: 16px;
+    --radius-sm: 10px;
+    --header-height: 64px;
+}
+
+/* ==========================================
+   TOKENS (tema escuro)
+   ========================================== */
+
+[data-theme="dark"] {
+    --primary: #2dd4bf;
+    --primary-dark: #14b8a6;
+    --primary-light: #5eead4;
+    --success: #4ade80;
+    --success-light: #86efac;
+    --danger: #f87171;
+    --warning: #fbbf24;
+    --yellow: #facc15;
+
+    --bg: #0c0c0d;
+    --bg-card: #18181b;
+    --bg-muted: #1f1f23;
+    --bg-blob-a: rgba(45, 212, 191, 0.10);
+    --bg-blob-b: rgba(74, 222, 128, 0.08);
+    --bg-blob-c: rgba(251, 191, 36, 0.06);
+
+    --text: #fafaf9;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --border: #27272a;
+
+    --ring: rgba(45, 212, 191, 0.35);
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.4), 0 14px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================
+   BASE
+   ========================================== */
+
+body {
+    background-color: var(--bg);
+}
+
+:focus-visible {
+    outline-color: color-mix(in srgb, var(--primary) 60%, transparent);
+    outline-width: 2px;
+}
+
+::selection {
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+/* ==========================================
+   HEADER (vidro, leve e profissional)
+   ========================================== */
+
+.app-header {
+    background-color: color-mix(in srgb, var(--bg-card) 78%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.header-title h1 {
+    color: var(--text);
+}
+
+.header-subtitle {
+    color: var(--text-secondary);
+}
+
+.logo-icon {
+    background: linear-gradient(135deg, var(--primary), var(--success));
+    border-radius: 12px;
+}
+
+.btn-icon {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: none;
+}
+
+.btn-icon:hover {
+    background-color: var(--bg-muted);
+    color: var(--text);
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-icon:active {
+    transform: scale(0.94);
+}
+
+/* ==========================================
+   USER CHIP / AVATAR (header)
+   ========================================== */
+
+.user-chip {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.user-chip:hover {
+    background-color: var(--bg-muted);
+    color: var(--text);
+    box-shadow: none;
+}
+
+.icon-sair {
+    color: var(--danger);
+}
+
+.user-avatar {
+    background: linear-gradient(135deg, var(--primary), var(--success));
+}
+
+/* ==========================================
+   CARDS
+   ========================================== */
+
+.card {
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.card-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+
+.card-stat::after {
+    content: none;
+}
+
+.card-stat::before {
+    width: 3px;
+    top: 10px;
+    bottom: 10px;
+    border-radius: 0 3px 3px 0;
+}
+
+.card-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-stat:hover::after {
+    transform: none;
+}
+
+.card-title {
+    letter-spacing: 0.6px;
+}
+
+/* ==========================================
+   BOTÕES
+   ========================================== */
+
+.btn {
+    border-radius: var(--radius-sm);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    filter: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.btn-secondary {
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border);
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.btn-danger:hover {
+    background-color: color-mix(in srgb, var(--danger) 88%, #000);
+    filter: none;
+    transform: translateY(-1px);
+}
+
+.btn-icon-nav:hover {
+    background-color: var(--bg-muted);
+}
+
+.btn-acoes {
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.btn-acoes:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+/* ==========================================
+   FORMULÁRIOS
+   ========================================== */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-card);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+/* ==========================================
+   MODAL
+   ========================================== */
+
+.modal-overlay {
+    background-color: rgba(12, 10, 9, 0.52);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.modal {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    padding: 18px 22px;
+}
+
+.modal form {
+    padding: 20px 22px 22px;
+}
+
+/* ==========================================
+   TABELAS
+   ========================================== */
+
+.data-table thead {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table thead th {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 10px;
+}
+
+.data-table tbody td {
+    color: var(--text);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+[data-theme="dark"] .data-table tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--text) 5%, transparent);
+}
+
+.data-table tbody tr:hover {
+    background-color: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+/* ==========================================
+   BADGES E STATUS (tonalidades suaves)
+   ========================================== */
+
+.status-pago,
+.item-status-badge.concluido,
+.budget-status.den-ok {
+    background-color: color-mix(in srgb, var(--success) 14%, transparent);
+    color: var(--success);
+}
+
+.status-pendente,
+.item-status-badge.em_andamento,
+.budget-status.den-warn {
+    background-color: color-mix(in srgb, var(--warning) 16%, transparent);
+    color: var(--warning);
+}
+
+.budget-status.den-danger {
+    background-color: color-mix(in srgb, var(--danger) 14%, transparent);
+    color: var(--danger);
+}
+
+.item-status-badge.comprado {
+    background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .status-pago,
+[data-theme="dark"] .item-status-badge.concluido,
+[data-theme="dark"] .budget-status.den-ok {
+    background-color: color-mix(in srgb, var(--success) 18%, transparent);
+    color: var(--success);
+}
+
+[data-theme="dark"] .status-pendente,
+[data-theme="dark"] .item-status-badge.em_andamento,
+[data-theme="dark"] .budget-status.den-warn {
+    background-color: color-mix(in srgb, var(--warning) 18%, transparent);
+    color: var(--warning);
+}
+
+[data-theme="dark"] .budget-status.den-danger {
+    background-color: color-mix(in srgb, var(--danger) 16%, transparent);
+    color: var(--danger);
+}
+
+[data-theme="dark"] .item-status-badge.comprado {
+    background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+    color: var(--primary);
+}
+
+.status,
+.item-status-badge,
+.categoria-badge {
+    border-radius: var(--radius-full, 999px);
+}
+
+/* ==========================================
+   NAVEGAÇÃO INFERIOR
+   ========================================== */
+
+.bottom-nav {
+    background-color: color-mix(in srgb, var(--bg-card) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 20px -14px rgba(0, 0, 0, 0.18);
+}
+
+.nav-item {
+    padding: 7px 14px;
+    border-radius: var(--radius-full, 999px);
+}
+
+.nav-item:hover {
+    background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.nav-item.active {
+    background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .nav-item:hover {
+    background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .nav-item.active {
+    background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+    color: var(--primary);
+}
+
+/* ==========================================
+   COMPONENTES DIVERSOS
+   ========================================== */
+
+.month-selector {
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.salary-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.credit-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.distribution-item {
+    border: 1px solid var(--border);
+}
+
+.progress-bar-container {
+    background-color: color-mix(in srgb, var(--success) 14%, var(--border));
+    height: 12px;
+}
+
+.form-static {
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border);
+}
+
+/* ==========================================
+   MENSAIS (aba Mensal) — unifica na paleta da marca
+   ========================================== */
+
+.person-section.bruno,
+.person-section.geovana,
+.resumo-bruno,
+.resumo-geovana {
+    --person-accent: var(--primary);
+}
+
+.bruno .person-avatar,
+.geovana .person-avatar {
+    background: linear-gradient(135deg, var(--primary), var(--success));
+}
+
+.income-total,
+.person-section.geovana .income-total {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.ap-total {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+/* ==========================================
+   TOAST
+   ========================================== */
+
+.toast {
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 12px;
+}
+
+.toast.toast-success { border-left-color: var(--success); }
+.toast.toast-error { border-left-color: var(--danger); }
+.toast.toast-warning { border-left-color: var(--warning); }
+.toast.toast-info { border-left-color: var(--primary); }
+
+/* ==========================================
+   LOGIN GATE
+   ========================================== */
+
+.auth-gate {
+    background:
+        radial-gradient(1000px 520px at 50% -10%, color-mix(in srgb, var(--primary) 16%, transparent), transparent 62%),
+        var(--bg);
+}
+
+.auth-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-logo .logo-icon {
+    background: linear-gradient(135deg, var(--primary), var(--success));
+    border-radius: 16px;
+}
+
+.auth-title {
+    color: var(--text);
+    letter-spacing: 0.4px;
+}
+
+.auth-subtitle,
+.auth-text {
+    color: var(--text-secondary);
+}
+
+.btn-google-auth {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.btn-google-auth:hover {
+    background-color: var(--bg-muted);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ==========================================
+   AJUSTES RESPONSIVOS DO NOVO TEMA
+   ========================================== */
+
+@media (max-width: 480px) {
+    .page-heading h2 {
+        font-size: 18px;
+    }
+
+    .app-main {
+        padding: 16px 12px;
+    }
+}
