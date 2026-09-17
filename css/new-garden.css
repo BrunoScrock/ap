@@ -543,7 +543,7 @@ body {
    AJUSTES RESPONSIVOS DO NOVO TEMA
    ========================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 599px) {
     .page-heading h2 {
         font-size: 18px;
     }
@@ -552,26 +552,31 @@ body {
         padding: 16px 12px;
     }
 
-    /* Valores numericos menos cortados no celular */
+    /* Valores menores no celular para nao cortar */
     .card-value,
     .card-stat .card-value {
-        font-size: 17px;
-        letter-spacing: -0.4px;
+        font-size: 15px;
+        letter-spacing: -0.3px;
         white-space: normal;
-        line-height: 1.25;
+        line-height: 1.2;
+        padding: 3px 9px;
     }
 
     .resumos-grid .card-stat .card-value {
-        font-size: 16px;
+        font-size: 15px;
     }
 
-    .income-total-value,
-    .ap-total-value {
-        font-size: 17px;
+    .income-total .income-total-value,
+    .ap-total .ap-total-value {
+        font-size: 15px;
     }
 
     .month-display span:first-child {
-        font-size: 16px;
+        font-size: 15px;
+    }
+
+    .items-total .it-value {
+        font-size: 14px;
     }
 }
 
@@ -661,6 +666,45 @@ body {
 
 #tabelaEconomias .acoes-cell {
     justify-content: center;
+}
+
+/* Resumo dos itens para compra */
+.items-totals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 4px 0 18px;
+}
+
+.items-total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    background-color: color-mix(in srgb, var(--bg-muted) 55%, transparent);
+    border: 1px solid var(--border);
+}
+
+.items-total .it-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.items-total .it-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    word-break: break-word;
+    text-align: center;
 }
 
 @media (max-width: 599px) {

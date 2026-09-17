@@ -26,7 +26,9 @@ function renderEconomias() {
     const grid = document.getElementById('gridItens');
 
     // Totais
-    const totalGuardado = Calculos.totalGuardado(economias);
+    const totalGuardado = economias
+        .filter(e => e.destino !== 'pagamento-balao')
+        .reduce((soma, e) => soma + (e.valor || 0), 0);
     const balao2026 = economias
         .filter(e => e.destino === 'pagamento-balao')
         .reduce((soma, e) => soma + (e.valor || 0), 0);

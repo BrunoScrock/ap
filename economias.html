@@ -98,24 +98,12 @@
 
                 <div class="cards-grid">
                     <div class="card card-stat" data-accent="green">
-                        <div class="card-label">Valor Total Guardado</div>
+                        <div class="card-label">Dinheiro Guardado</div>
                         <div class="card-value" id="totalGuardadoEconomias">R$ 0,00</div>
                     </div>
                     <div class="card card-stat" data-accent="yellow">
                         <div class="card-label">Valor Balão (2026)</div>
                         <div class="card-value" id="valorBalao2026">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="primary">
-                        <div class="card-label">Total Estimado (Itens)</div>
-                        <div class="card-value" id="totalEstimadoItens">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="green">
-                        <div class="card-label">Guardado (Itens)</div>
-                        <div class="card-value" id="guardadoItens">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="danger">
-                        <div class="card-label">Falta Comprar</div>
-                        <div class="card-value" id="faltaItens">R$ 0,00</div>
                     </div>
                 </div>
 
@@ -144,6 +132,20 @@
                     <div class="card-title-row">
                         <div class="card-title">Itens para Compra</div>
                         <button class="btn btn-primary" id="btnNovoItem">+ Novo Item</button>
+                    </div>
+                    <div class="items-totals">
+                        <div class="items-total">
+                            <span class="it-label">Total Estimado</span>
+                            <span class="it-value" id="totalEstimadoItens">R$ 0,00</span>
+                        </div>
+                        <div class="items-total">
+                            <span class="it-label">Guardado</span>
+                            <span class="it-value" id="guardadoItens">R$ 0,00</span>
+                        </div>
+                        <div class="items-total">
+                            <span class="it-label">Falta Comprar</span>
+                            <span class="it-value" id="faltaItens">R$ 0,00</span>
+                        </div>
                     </div>
                     <div class="items-grid" id="gridItens">
                     </div>
