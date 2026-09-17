@@ -7,6 +7,12 @@
    em qualquer tamanho de tela. */
 
 /* Telas muitos pequenas: título do cabeçalho mais enxuto */
+@media (max-width: 599px) {
+    .header-subtitle {
+        display: none;
+    }
+}
+
 @media (max-width: 399px) {
     .header-title h1 {
         font-size: 13px;
