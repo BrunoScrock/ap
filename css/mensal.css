@@ -287,13 +287,97 @@
    SALDO FINAL EM DESTAQUE (resumo financeiro)
    ========================================== */
 
-.card-stat.highlight-final {
-    box-shadow: 0 0 0 2px var(--person-accent, var(--primary));
+.resumo-bruno {
+    --person-accent: #3a7bd5;
+}
+
+.resumo-geovana {
+    --person-accent: #db2777;
+}
+
+.resumos-grid .card-stat.highlight-final {
+    background-color: color-mix(in srgb, var(--person-accent, var(--primary)) 9%, var(--bg-card));
+    border-color: color-mix(in srgb, var(--person-accent, var(--primary)) 55%, var(--border));
+}
+
+.resumos-grid .card-stat.highlight-final .card-value {
+    color: var(--person-accent, var(--primary));
+    font-size: 22px;
+}
+
+.resumos-grid .card-stat.highlight-final::before {
+    background-color: var(--person-accent, var(--primary));
 }
 
 /* ==========================================
-   RESUMO FINANCEIRO (BRUNO E GEOVANA ALINHADOS)
+   RESUMO FINANCEIRO — TILES (BRUNO E GEOVANA)
    ========================================== */
+
+.resumos-grid .card-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-height: 78px;
+    padding: 12px 14px 12px 17px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.resumos-grid .card-stat::before {
+    width: 3px;
+    left: 0;
+    right: auto;
+    top: 9px;
+    bottom: 9px;
+    border-radius: 0 3px 3px 0;
+    height: auto;
+    background-color: var(--accent-color, var(--text-secondary));
+}
+
+.resumos-grid .card-stat::after {
+    content: none;
+}
+
+.resumos-grid .card-stat:hover {
+    transform: none;
+    box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.22);
+}
+
+.resumos-grid .card-stat .card-label {
+    margin: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: 10.5px;
+    letter-spacing: 0.5px;
+    line-height: 1.35;
+    color: var(--text-secondary);
+}
+
+.resumos-grid .card-stat .card-value {
+    font-size: 19px;
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+    color: var(--text);
+}
+
+.resumos-grid .card-stat .card-value.positive {
+    color: var(--success);
+}
+
+.resumos-grid .card-stat .card-value.negative {
+    color: var(--danger);
+}
+
+@media (max-width: 420px) {
+    .resumos-grid .totals-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 .resumos-grid {
     display: grid;
