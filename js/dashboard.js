@@ -15,7 +15,7 @@ function renderDashboard() {
     const totalPago = Calculos.totalPago(pagamentos);
     const saldoDevedor = Calculos.saldoDevedor(valorTotal, pagamentos);
     const percentual = Calculos.percentualQuitacao(valorTotal, pagamentos);
-    const totalGuardado = Calculos.totalGuardado(economias);
+    const totalGuardado = Calculos.totalDisponivelCompras(economias);
     const dataEntrega = configuracoes.dataEntrega;
 
     // Cards principais

@@ -555,28 +555,36 @@ body {
     /* Valores menores no celular para nao cortar */
     .card-value,
     .card-stat .card-value {
-        font-size: 15px;
+        font-size: 14px;
         letter-spacing: -0.3px;
         white-space: normal;
         line-height: 1.2;
-        padding: 3px 9px;
+        padding: 2px 8px;
     }
 
     .resumos-grid .card-stat .card-value {
-        font-size: 15px;
+        font-size: 14px;
     }
 
     .income-total .income-total-value,
     .ap-total .ap-total-value {
-        font-size: 15px;
+        font-size: 14px;
     }
 
     .month-display span:first-child {
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .items-total .it-value {
-        font-size: 14px;
+        font-size: 13px;
+    }
+
+    .card-label {
+        font-size: 11px;
+    }
+
+    .items-total .it-label {
+        font-size: 9.5px;
     }
 }
 
@@ -627,6 +635,28 @@ body {
 
 .resumos-grid .card-stat.highlight-final .card-value {
     background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+/* Fontes dos blocos de valor reduzidas */
+.card-label {
+    font-size: 12px;
+}
+
+.card-value {
+    font-size: clamp(16px, 1.8vw, 19px);
+}
+
+.resumos-grid .card-stat .card-value {
+    font-size: 17px;
+}
+
+.income-total .income-total-value,
+.ap-total .ap-total-value {
+    font-size: 17px;
+}
+
+.month-display span:first-child {
+    font-size: 15px;
 }
 
 /* Link do produto nos itens para compra */
@@ -814,24 +844,42 @@ body {
 
     .app-column .app-header {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         margin: 0;
         padding: 0 28px;
         z-index: 40;
-    }
-
-    .app-column .app-header .header-logo {
-        display: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .app-column .app-main {
         max-width: 1100px;
         width: 100%;
         margin: 0 auto;
-        padding: 28px 28px 56px;
+        padding: 28px 28px 40px;
     }
 
     .bottom-nav {
-        display: none;
+        position: static;
+        display: flex !important;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+        max-width: 1100px;
+        height: auto;
+        margin: 0 auto;
+        padding: 18px 24px 28px;
+        background: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        border: none;
+        border-top: 1px solid var(--border);
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .bottom-nav .nav-item {
+        gap: 6px;
     }
 }
