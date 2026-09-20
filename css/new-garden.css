@@ -883,3 +883,225 @@ body {
         gap: 6px;
     }
 }
+
+/* ==========================================================
+   PRO LAYER — polimento premium (inspiração Linear/Vercel/Stripe)
+   Identidade própria, aplicado por último em todo o sistema.
+   ========================================================== */
+
+:root {
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --sidebar-width: 248px;
+    --page-width: 1100px;
+    --bg-subtle: #f5f5f4;
+    --shadow-card: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.05), 0 10px 30px -14px rgba(28, 25, 23, 0.10);
+    --grad-brand: linear-gradient(135deg, var(--primary), var(--success));
+}
+
+[data-theme="dark"] {
+    --bg-subtle: #18181b;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+}
+
+body {
+    font-family: var(--font-family);
+    font-feature-settings: 'cv11', 'ss01', 'zero';
+}
+
+h1,
+h2,
+h3,
+h4 {
+    letter-spacing: -0.02em;
+}
+
+/* Scrollbar discreta (desktop) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+/* ---------- Header ---------- */
+.app-header { height: 60px; }
+.header-title h1 { font-size: 16px; font-weight: 700; }
+.header-subtitle { font-size: 12px; }
+.logo-icon {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 2px 6px rgba(0, 0, 0, 0.18);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.btn-icon,
+.user-chip { transition: background-color 0.15s ease, transform 0.06s ease; }
+.btn-icon:active,
+.user-chip:active { transform: scale(0.96); }
+
+/* ---------- Sidebar (desktop) ---------- */
+.app-sidebar {
+    width: var(--sidebar-width);
+    padding: 20px 14px;
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--primary) 4%, transparent), transparent 26%);
+}
+.sidebar-brand .logo-icon { width: 38px; height: 38px; border-radius: 11px; font-size: 15px; }
+.sidebar-brand { padding: 4px 8px 16px; }
+.brand-name { font-size: 16px; }
+.sidebar-nav { margin-top: 2px; }
+.sidebar-nav::before {
+    content: 'NAVEGAÇÃO';
+    display: block;
+    padding: 0 12px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+}
+.sidebar-nav .nav-item { min-height: 40px; }
+.sidebar-nav .nav-item.active { box-shadow: inset 3px 0 0 var(--primary); }
+
+/* ---------- Cards ---------- */
+.card {
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease;
+}
+.card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--text-secondary);
+}
+.card-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+.card-stat { position: relative; overflow: hidden; }
+.card-stat::before { border-radius: 0 3px 3px 0; }
+
+/* ---------- Dashboard ---------- */
+.page-heading { margin-bottom: 22px; }
+.page-heading h2 { font-size: clamp(20px, 2.4vw, 27px); font-weight: 800; }
+.progress-card { padding: 20px; }
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    border-radius: 999px;
+}
+.progress-bar span { color: #ffffff; font-weight: 700; }
+.progress-bar-container { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12); }
+.resumo-rapido {
+    margin-top: 18px;
+    padding: 16px;
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* ---------- Botões ---------- */
+.btn {
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, transform 0.06s ease;
+}
+.btn:active { transform: translateY(1px) scale(0.99); }
+.btn-primary {
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--primary) 92%, #ffffff), var(--primary));
+}
+.btn-primary:hover { box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 32%, transparent); }
+.btn-acoes { transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+
+/* ---------- Formulários ---------- */
+.form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    height: 40px;
+    padding: 0 12px;
+    font-size: 14px;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.form-group textarea { height: auto; padding: 10px 12px; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+/* ---------- Tabelas ---------- */
+.table-wrapper { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.data-table thead th { background-color: var(--bg-subtle); }
+.data-table tbody td { padding: 12px 10px; font-size: 14px; }
+.data-table tbody td:first-child { padding-left: 16px; }
+.data-table tbody td:last-child { padding-right: 16px; }
+.acoes-cell { display: flex; gap: 6px; justify-content: flex-end; }
+
+@media (max-width: 599px) {
+    .table-wrapper { border: none; border-radius: 0; overflow: visible; }
+}
+
+/* ---------- Modal ---------- */
+.modal { position: relative; overflow: hidden; }
+.modal::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    border-radius: 20px 20px 0 0;
+}
+.modal-header h3 { font-size: 17px; font-weight: 700; }
+.form-actions { gap: 8px; }
+
+/* ---------- Toast ---------- */
+.toast { background-color: var(--bg-card); box-shadow: var(--shadow-lg); font-size: 13px; }
+
+/* ---------- Empty states ---------- */
+.empty-state .empty-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+    border-radius: 16px;
+    font-size: 22px;
+}
+.empty-title { font-weight: 700; font-size: 15px; }
+.empty-text { color: var(--text-secondary); max-width: 320px; margin: 4px auto 0; }
+
+/* ---------- Itens de compra (Economias) ---------- */
+.item-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.item-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.item-name { font-weight: 600; }
+.item-progress-fill { background: linear-gradient(90deg, var(--primary), var(--success)); }
+
+/* ---------- Seletores e chips (Mensal) ---------- */
+.month-selector { border-radius: 12px; }
+.credit-total-chip { border: 1px solid var(--border); }
+
+/* ---------- Numéricos com tabulação uniforme ---------- */
+.card-value,
+.income-total-value,
+.ap-total-value,
+.mini-value,
+.items-total .it-value,
+.data-table td:not(:last-child) { font-variant-numeric: tabular-nums; }
