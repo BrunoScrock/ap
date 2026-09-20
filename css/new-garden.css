@@ -974,10 +974,14 @@ h4 {
 }
 .card-label {
     font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: var(--text-secondary);
     margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .card-stat { position: relative; overflow: hidden; }
 .card-stat::before { border-radius: 0 3px 3px 0; }
@@ -1205,25 +1209,53 @@ h4 {
 
 /* Celular: blocos de valor compactos, sem cortar */
 @media (max-width: 599px) {
+    .card-label {
+        font-size: 10px;
+        letter-spacing: 0.4px;
+        line-height: 1.2;
+        padding: 0 2px;
+    }
+
     .card-value {
-        font-size: 15px;
-        padding: 4px 10px;
-        gap: 6px;
-        letter-spacing: -0.3px;
-        border-radius: 10px;
+        font-size: 13px;
+        padding: 3px 9px;
+        gap: 5px;
+        letter-spacing: -0.2px;
+        border-radius: 9px;
+        line-height: 1.25;
     }
 
     .card-value::before {
-        width: 6px;
-        height: 6px;
+        width: 5px;
+        height: 5px;
     }
 
     .income-total .income-total-value,
     .ap-total .ap-total-value {
-        font-size: 15px;
+        font-size: 14px;
+        letter-spacing: -0.3px;
     }
 
     .items-total .it-value {
-        font-size: 15px;
+        font-size: 13px;
+        letter-spacing: -0.3px;
+    }
+
+    .items-total .it-label {
+        font-size: 8.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mini-label {
+        font-size: 9px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mini-value {
+        font-size: 14px;
     }
 }
