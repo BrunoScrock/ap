@@ -2092,28 +2092,6 @@ h4 {
 }
 
 /* ==========================================================
-   BLOCOS DE TABELA — fundo vidro fosco (itens internos mantêm cor)
-   ========================================================== */
-
-.card:has(.data-table) {
-    position: relative;
-    background-color: color-mix(in srgb, var(--bg-card) 72%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    backdrop-filter: blur(14px) saturate(1.2);
-    border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
-    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.25);
-}
-
-.card:has(.data-table)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(140deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 45%, rgba(255, 255, 255, 0.10));
-    pointer-events: none;
-}
-
-/* ==========================================================
    FOTO DE FUNDO EM TODAS AS PÁGINAS (tema New Garden)
    ========================================================== */
 
