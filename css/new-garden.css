@@ -2142,3 +2142,138 @@ body::after {
         box-shadow: 0 -8px 28px -18px rgba(0, 0, 0, 0.22);
     }
 }
+
+/* ==========================================================
+   RODAPÉ / NAVEGAÇÃO — texto e ícones em branco (vidro cinza)
+   ========================================================== */
+
+.bottom-nav .nav-item {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.bottom-nav .nav-item:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.bottom-nav .nav-item.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.22);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .bottom-nav .nav-item:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .bottom-nav .nav-item.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ==========================================================
+   MENSAIS — blocos de Bruno em azul-claro vidro fosco com cinza
+   e blocos de Geovana em rosa vidro fosco
+   ========================================================== */
+
+.person-section.bruno,
+.resumo-bruno {
+    --person-accent: #2563eb;
+    --person-frost-bg: linear-gradient(150deg, rgba(196, 220, 248, 0.84), rgba(166, 196, 230, 0.76));
+    --person-frost-border: 1px solid rgba(140, 182, 240, 0.55);
+}
+
+.person-section.geovana,
+.resumo-geovana {
+    --person-accent: #db2777;
+    --person-frost-bg: linear-gradient(150deg, rgba(250, 215, 234, 0.86), rgba(241, 193, 219, 0.78));
+    --person-frost-border: 1px solid rgba(240, 150, 190, 0.60);
+}
+
+/* Nome da pessoa em bloco com animação + vidro fosco do cinza da pessoa */
+.person-banner {
+    margin: 20px 0 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: var(--person-frost-border, 1px solid rgba(255, 255, 255, 0.4));
+    background: var(--person-frost-bg, linear-gradient(150deg, rgba(200, 216, 236, 0.75), rgba(178, 194, 216, 0.65)));
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+    animation: bannerFlutua 4.5s ease-in-out infinite;
+}
+
+@keyframes bannerFlutua {
+    0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 10px 24px -14px rgba(96, 118, 150, 0.35);
+    }
+    50% {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 34px -16px rgba(96, 118, 150, 0.55);
+    }
+}
+
+.person-name {
+    color: var(--person-accent, var(--primary));
+    font-size: 20px;
+}
+
+/* Cards das seções de cada pessoa (tabelas, salário, etc.) */
+.person-section.bruno > .card,
+.person-section.bruno .income-total,
+.resumo-bruno,
+.resumo-bruno .card-stat,
+.split-quem.bruno {
+    background: var(--person-frost-bg);
+    -webkit-backdrop-filter: blur(14px) saturate(1.12);
+    backdrop-filter: blur(14px) saturate(1.12);
+    border-color: rgba(140, 182, 240, 0.55);
+}
+
+.person-section.geovana > .card,
+.person-section.geovana .income-total,
+.resumo-geovana,
+.resumo-geovana .card-stat,
+.split-quem.geovana {
+    background: var(--person-frost-bg);
+    -webkit-backdrop-filter: blur(14px) saturate(1.12);
+    backdrop-filter: blur(14px) saturate(1.12);
+    border-color: rgba(240, 150, 190, 0.60);
+}
+
+/* Texto dos valores dos blocos na cor de cada pessoa */
+.person-section.bruno .income-total,
+.resumo-bruno .card-stat.highlight-final .card-value {
+    color: #2563eb;
+}
+
+.person-section.geovana .income-total,
+.resumo-geovana .card-stat.highlight-final .card-value {
+    color: #db2777;
+}
+
+.person-section .income-total .income-total-label,
+.resumo-bruno .card-label,
+.resumo-geovana .card-label {
+    color: var(--person-accent, var(--text-secondary));
+    opacity: 0.85;
+}
+
+.resumo-bruno .card-stat.highlight-final::before,
+.resumo-geovana .card-stat.highlight-final::before {
+    background-color: var(--person-accent);
+}
+
+.resumo-bruno .card-stat.highlight-final .card-value::before,
+.resumo-geovana .card-stat.highlight-final .card-value::before {
+    background: var(--person-accent);
+    box-shadow: none;
+}
+
+/* Divisão do apartamento: manter o quadro verde de quem paga mais */
+.split-quem.maior {
+    border-color: var(--success);
+    box-shadow: 0 0 0 1px var(--success);
+    background-color: rgba(16, 185, 129, 0.10);
+}
