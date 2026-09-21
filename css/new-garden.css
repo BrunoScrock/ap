@@ -2157,8 +2157,8 @@ body::after {
 }
 
 .bottom-nav .nav-item.active {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.22);
+    color: #f5c542;
+    background-color: rgba(245, 197, 66, 0.16);
     font-weight: 600;
 }
 
@@ -2168,36 +2168,31 @@ body::after {
 }
 
 [data-theme="dark"] .bottom-nav .nav-item.active {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.18);
+    color: #f5c542;
+    background-color: rgba(245, 197, 66, 0.14);
 }
 
 /* ==========================================================
-   MENSAIS — blocos de Bruno em azul-claro vidro fosco com cinza
-   e blocos de Geovana em rosa vidro fosco
+   MENSAIS — banner do nome em vidro fosco com animação;
+   blocos de Bruno/Geovana só com borda azul/rosa nas laterais
    ========================================================== */
 
 .person-section.bruno,
 .resumo-bruno {
-    --person-accent: #2563eb;
-    --person-frost-bg: linear-gradient(150deg, rgba(196, 220, 248, 0.84), rgba(166, 196, 230, 0.76));
-    --person-frost-border: 1px solid rgba(140, 182, 240, 0.55);
+    --person-accent: #3a7bd5;
 }
 
 .person-section.geovana,
 .resumo-geovana {
     --person-accent: #db2777;
-    --person-frost-bg: linear-gradient(150deg, rgba(250, 215, 234, 0.86), rgba(241, 193, 219, 0.78));
-    --person-frost-border: 1px solid rgba(240, 150, 190, 0.60);
 }
 
-/* Nome da pessoa em bloco com animação + vidro fosco do cinza da pessoa */
 .person-banner {
     margin: 20px 0 12px;
     padding: 12px 16px;
     border-radius: 16px;
-    border: var(--person-frost-border, 1px solid rgba(255, 255, 255, 0.4));
-    background: var(--person-frost-bg, linear-gradient(150deg, rgba(200, 216, 236, 0.75), rgba(178, 194, 216, 0.65)));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: linear-gradient(150deg, rgba(200, 216, 236, 0.75), rgba(178, 194, 216, 0.65));
     -webkit-backdrop-filter: blur(14px) saturate(1.15);
     backdrop-filter: blur(14px) saturate(1.15);
     animation: bannerFlutua 4.5s ease-in-out infinite;
@@ -2219,56 +2214,24 @@ body::after {
     font-size: 20px;
 }
 
-/* Cards das seções de cada pessoa (tabelas, salário, etc.) */
+/* Todos os blocos de Bruno com borda azul nas laterais */
 .person-section.bruno > .card,
 .person-section.bruno .income-total,
 .resumo-bruno,
 .resumo-bruno .card-stat,
 .split-quem.bruno {
-    background: var(--person-frost-bg);
-    -webkit-backdrop-filter: blur(14px) saturate(1.12);
-    backdrop-filter: blur(14px) saturate(1.12);
-    border-color: rgba(140, 182, 240, 0.55);
+    border-left: 3px solid #3a7bd5;
+    border-right: 3px solid #3a7bd5;
 }
 
+/* Todos os blocos de Geovana com borda rosa nas laterais */
 .person-section.geovana > .card,
 .person-section.geovana .income-total,
 .resumo-geovana,
 .resumo-geovana .card-stat,
 .split-quem.geovana {
-    background: var(--person-frost-bg);
-    -webkit-backdrop-filter: blur(14px) saturate(1.12);
-    backdrop-filter: blur(14px) saturate(1.12);
-    border-color: rgba(240, 150, 190, 0.60);
-}
-
-/* Texto dos valores dos blocos na cor de cada pessoa */
-.person-section.bruno .income-total,
-.resumo-bruno .card-stat.highlight-final .card-value {
-    color: #2563eb;
-}
-
-.person-section.geovana .income-total,
-.resumo-geovana .card-stat.highlight-final .card-value {
-    color: #db2777;
-}
-
-.person-section .income-total .income-total-label,
-.resumo-bruno .card-label,
-.resumo-geovana .card-label {
-    color: var(--person-accent, var(--text-secondary));
-    opacity: 0.85;
-}
-
-.resumo-bruno .card-stat.highlight-final::before,
-.resumo-geovana .card-stat.highlight-final::before {
-    background-color: var(--person-accent);
-}
-
-.resumo-bruno .card-stat.highlight-final .card-value::before,
-.resumo-geovana .card-stat.highlight-final .card-value::before {
-    background: var(--person-accent);
-    box-shadow: none;
+    border-left: 3px solid #db2777;
+    border-right: 3px solid #db2777;
 }
 
 /* Divisão do apartamento: manter o quadro verde de quem paga mais */
