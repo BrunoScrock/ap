@@ -1948,6 +1948,34 @@ h4 {
     background: linear-gradient(135deg, color-mix(in srgb, var(--success) 13%, transparent), color-mix(in srgb, var(--success) 5%, transparent));
 }
 
+/* Espaçamento entre o último sub-bloco e os blocos de tabelas */
+.stat-page-grid {
+    margin-bottom: 24px;
+}
+
+#page-dashboard .cards-grid.stat-grid {
+    margin-bottom: 22px;
+}
+
+.resumo-card {
+    margin-bottom: 6px;
+}
+
+.items-totals.items-totals {
+    margin-bottom: 18px;
+}
+
+.saldo-hero {
+    margin-bottom: 22px;
+}
+
+@media (max-width: 599px) {
+    .stat-page-grid,
+    #page-dashboard .cards-grid.stat-grid {
+        margin-bottom: 16px;
+    }
+}
+
 .resumo-card .resumo-rapido {
     margin-top: 10px;
 }
