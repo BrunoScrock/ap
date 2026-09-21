@@ -2256,4 +2256,32 @@ body::after {
 .card:has(#tabelaResumoFinal) {
     border-left: 3px solid #3a7bd5;
     border-right: 3px solid #db2777;
+    margin-top: 24px;
+}
+
+@media (max-width: 599px) {
+    .card:has(#tabelaResumoFinal) {
+        margin-top: 18px;
+    }
+}
+
+/* Cores das colunas dentro da tabela do resumo final */
+#tabelaResumoFinal thead th:nth-child(2) {
+    color: #2563eb;
+}
+
+#tabelaResumoFinal thead th:nth-child(3) {
+    color: #db2777;
+}
+
+#tabelaResumoFinal tbody td:nth-child(2) {
+    background-color: rgba(58, 123, 213, 0.10);
+    color: #2563eb;
+    font-weight: 700;
+}
+
+#tabelaResumoFinal tbody td:nth-child(3) {
+    background-color: rgba(219, 39, 119, 0.10);
+    color: #db2777;
+    font-weight: 700;
 }
