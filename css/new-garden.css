@@ -1748,6 +1748,80 @@ h4 {
     }
 }
 
+/* ==========================================================
+   PADRÃO NP-CARD NO SISTEMA TODO
+   (cards de valor com ícone em todas as páginas)
+   ========================================================== */
+
+.np-balao { --accent: #7c5bd4; }
+.np-warn { --accent: var(--warning); }
+.np-renda { --accent: var(--success); }
+
+.stat-page-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stats-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.items-totals.items-totals {
+    display: grid;
+    margin-bottom: 16px;
+}
+
+.total-full {
+    grid-column: 1 / -1;
+}
+
+.income-grid .total-full,
+.apartamento-grid .total-full {
+    margin-top: 2px;
+}
+
+/* Chips de crédito (Mensal) no padrão premium */
+.credit-total-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.credit-total-chip strong {
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.credit-total-chip.destaque {
+    background: color-mix(in srgb, var(--success) 12%, transparent);
+    border-color: color-mix(in srgb, var(--success) 30%, transparent);
+}
+
+.credit-total-chip.destaque strong {
+    color: var(--success);
+}
+
+@media (max-width: 599px) {
+    .stat-page-grid,
+    .stats-3 {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .credit-total-chip {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+}
+
 .resumo-card .resumo-rapido {
     margin-top: 10px;
 }
