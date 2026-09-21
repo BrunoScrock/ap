@@ -1433,6 +1433,31 @@ h4 {
     box-shadow: 0 12px 24px -12px color-mix(in srgb, var(--primary) 65%, transparent);
 }
 
+/* Tag colorida de tipo (Valores Guardados) */
+.tipo-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.tipo-balao {
+    color: #7c5bd4;
+    background: color-mix(in srgb, #7c5bd4 14%, transparent);
+    border-color: color-mix(in srgb, #7c5bd4 30%, transparent);
+}
+
+.tipo-compras {
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    border-color: color-mix(in srgb, var(--success) 30%, transparent);
+}
+
 .resumo-card .resumo-rapido {
     margin-top: 10px;
 }

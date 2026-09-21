@@ -53,7 +53,9 @@ function renderEconomias() {
                 <tr>
                     <td data-label="Valor" class="text-right">${Utils.formatarMoeda(e.valor)}</td>
                     <td data-label="Data">${Utils.formatarData(e.data)}</td>
-                    <td data-label="Tipo">${tipoEconomiaLabel(e.destino)}</td>
+                    <td data-label="Tipo">${e.destino === 'pagamento-balao'
+                        ? '<span class="tipo-tag tipo-balao">Balão</span>'
+                        : '<span class="tipo-tag tipo-compras">Guardar dinheiro</span>'}</td>
                     <td data-label="Ações">
                         <div class="acoes-cell">
                             <button class="btn-acoes btn-editar-economia" data-id="${e.id}" title="Editar" aria-label="Editar valor guardado">
