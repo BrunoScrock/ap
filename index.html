@@ -140,8 +140,27 @@
 
                 <div class="chart-grid">
                     <div class="card chart-card">
+                    <div class="card-title-block">
                         <div class="card-title">Financiamento</div>
+                        <p class="card-subtitle">Evolução do pagamento do financiamento.</p>
+                    </div>
+                    <div class="chart-wrap">
                         <canvas id="chartPagoDevedor"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item legend-pago">
+                            <span class="legend-dot"></span>
+                            <span class="legend-label">Total Pago</span>
+                            <span class="legend-value" id="chartValorPago">R$ 0,00</span>
+                            <span class="legend-pct" id="chartPctPago">0%</span>
+                        </div>
+                        <div class="legend-item legend-devedor">
+                            <span class="legend-dot"></span>
+                            <span class="legend-label">Saldo Devedor</span>
+                            <span class="legend-value" id="chartValorDevedor">R$ 0,00</span>
+                            <span class="legend-pct" id="chartPctDevedor">0%</span>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </section>

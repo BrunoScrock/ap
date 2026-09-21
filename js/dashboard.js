@@ -35,6 +35,12 @@ function renderDashboard() {
     setTexto('valorPagoInfo', Utils.formatarMoeda(totalPago));
     setTexto('valorTotalInfo', Utils.formatarMoeda(valorTotal));
 
+    // Legenda do gráfico
+    setTexto('chartValorPago', Utils.formatarMoeda(totalPago));
+    setTexto('chartValorDevedor', Utils.formatarMoeda(saldoDevedor));
+    setTexto('chartPctPago', `${Math.min(percentual, 100).toFixed(1)}%`);
+    setTexto('chartPctDevedor', `${Math.max(0, Math.min(100, 100 - percentual)).toFixed(1)}%`);
+
     // Resumo rápido
     renderResumoRapido(pagamentos, totalGuardado);
 
@@ -52,24 +58,59 @@ function renderResumoRapido(pagamentos, totalGuardado) {
     const mes = new Date().getMonth() + 1;
     const totalPagoMes = Calculos.totalPago(pagamentos, { mes, ano });
     const totalINCC = Calculos.totalINCC(pagamentos);
+    const barraPct = totalParcelas ? Math.round((pagos / totalParcelas) * 100) : 0;
 
     container.innerHTML = `
-        <div class="resumo-rapido-grid">
-            <div class="mini-stat">
-                <span class="mini-label">Parcelas Pagas</span>
-                <span class="mini-value">${pagos} / ${totalParcelas}</span>
+        <div class="np-grid">
+            <div class="np-card np-pago">
+                <span class="np-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </span>
+                <span class="np-body">
+                    <span class="np-label">Parcelas pagas</span>
+                    <span class="np-value">${pagos} de ${totalParcelas}</span>
+                    <span class="np-bar"><i style="width:${barraPct}%"></i></span>
+                </span>
             </div>
-            <div class="mini-stat">
-                <span class="mini-label">Pago no Mês</span>
-                <span class="mini-value">${Utils.formatarMoeda(totalPagoMes)}</span>
+            <div class="np-card np-mes">
+                <span class="np-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </span>
+                <span class="np-body">
+                    <span class="np-label">Pago no mês</span>
+                    <span class="np-value">${Utils.formatarMoeda(totalPagoMes)}</span>
+                </span>
             </div>
-            <div class="mini-stat">
-                <span class="mini-label">INCC / Juros</span>
-                <span class="mini-value">${Utils.formatarMoeda(totalINCC)}</span>
+            <div class="np-card np-incc">
+                <span class="np-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                        <polyline points="17 6 23 6 23 12"/>
+                    </svg>
+                </span>
+                <span class="np-body">
+                    <span class="np-label">INCC / Juros</span>
+                    <span class="np-value">${Utils.formatarMoeda(totalINCC)}</span>
+                </span>
             </div>
-            <div class="mini-stat">
-                <span class="mini-label">Guardado</span>
-                <span class="mini-value">${Utils.formatarMoeda(totalGuardado)}</span>
+            <div class="np-card np-guardado">
+                <span class="np-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </span>
+                <span class="np-body">
+                    <span class="np-label">Guardado p/ compras</span>
+                    <span class="np-value">${Utils.formatarMoeda(totalGuardado)}</span>
+                </span>
             </div>
         </div>
     `;
@@ -100,15 +141,15 @@ function desenharGraficoPagoDevedor(pago, devedor) {
     const desenhar = (progresso) => {
         const dpr = window.devicePixelRatio || 1;
         const larguraCss = canvas.clientWidth || (canvas.parentElement ? canvas.parentElement.clientWidth - 32 : 300) || 300;
-        const alturaCss = 300;
+        const alturaCss = 320;
         canvas.width = Math.round(larguraCss * dpr);
         canvas.height = Math.round(alturaCss * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, larguraCss, alturaCss);
 
         const cx = larguraCss / 2;
-        const cy = 126;
-        const raio = Math.max(56, Math.min((larguraCss - 56) / 2, 86));
+        const cy = 158;
+        const raio = Math.max(72, Math.min((larguraCss - 56) / 2, 104));
         const espessura = Math.max(18, Math.min(30, raio * 0.34));
         const inicio = -Math.PI / 2;
         const gap = 0.035;
@@ -118,7 +159,7 @@ function desenharGraficoPagoDevedor(pago, devedor) {
 
         // Trilha (fundo)
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(127, 135, 150, 0.16)';
+        ctx.strokeStyle = 'rgba(127, 135, 150, 0.14)';
         ctx.lineWidth = espessura;
         ctx.beginPath();
         ctx.arc(cx, cy, raio, 0, Math.PI * 2);
@@ -132,13 +173,16 @@ function desenharGraficoPagoDevedor(pago, devedor) {
             ctx.stroke();
         }
 
-        // Arco pago (verde), com sombra
+        // Arco pago (verde), com gradiente e sombra
         if (angPago > gap * 2) {
+            const grad = ctx.createLinearGradient(cx - raio, cy - espessura, cx + raio, cy + espessura);
+            grad.addColorStop(0, cores.successLight);
+            grad.addColorStop(1, cores.success);
             ctx.save();
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.18)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = 3;
-            ctx.strokeStyle = cores.success;
+            ctx.strokeStyle = grad;
+            ctx.shadowColor = 'rgba(4, 120, 87, 0.35)';
+            ctx.shadowBlur = 16;
+            ctx.shadowOffsetY = 4;
             ctx.beginPath();
             ctx.arc(cx, cy, raio, inicio + gap, inicio + angPago - gap);
             ctx.stroke();
@@ -148,51 +192,11 @@ function desenharGraficoPagoDevedor(pago, devedor) {
         // Valor central: % quitado
         ctx.textAlign = 'center';
         ctx.fillStyle = cores.texto;
-        ctx.font = 'bold 30px sans-serif';
-        ctx.fillText((pctPago * 100).toFixed(1) + '%', cx, cy + 5);
+        ctx.font = 'bold 32px sans-serif';
+        ctx.fillText((pctPago * 100).toFixed(1) + '%', cx, cy + 4);
         ctx.fillStyle = cores.textSecundario;
-        ctx.font = '12px sans-serif';
-        ctx.fillText('quitado', cx, cy + 25);
-
-        // Legenda
-        const linhas = [
-            { cor: cores.success, label: 'Total Pago', valor: pago, pct: pctPago },
-            { cor: cores.danger, label: 'Saldo Devedor', valor: devedor, pct: 1 - pctPago }
-        ];
-        const yInicial = cy + raio + 34;
-        linhas.forEach((linha, i) => {
-            const y = yInicial + i * 22;
-            const txtValor = Utils.formatarMoeda(linha.valor) + '  (' + (linha.pct * 100).toFixed(1) + '%)';
-
-            let fs = 12;
-            ctx.font = fs + 'px sans-serif';
-            ctx.textAlign = 'left';
-            let wLabel = ctx.measureText(linha.label).width;
-            let wValor = ctx.measureText(txtValor).width;
-            while (wLabel + wValor + 28 > larguraCss - 24 && fs > 9.5) {
-                fs -= 0.5;
-                ctx.font = fs + 'px sans-serif';
-                wLabel = ctx.measureText(linha.label).width;
-                wValor = ctx.measureText(txtValor).width;
-            }
-
-            const startX = (larguraCss - (wLabel + wValor + 28)) / 2;
-
-            // Bolinha colorida
-            ctx.fillStyle = linha.cor;
-            ctx.beginPath();
-            ctx.arc(startX + 5, y - 4, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Rótulo
-            ctx.fillStyle = cores.textSecundario;
-            ctx.fillText(linha.label, startX + 15, y);
-
-            // Valor + %
-            ctx.font = 'bold ' + fs + 'px sans-serif';
-            ctx.fillStyle = cores.texto;
-            ctx.fillText(txtValor, startX + 15 + wLabel + 13, y);
-        });
+        ctx.font = '12.5px sans-serif';
+        ctx.fillText('do contrato quitado', cx, cy + 26);
     };
 
     const inicioT = performance.now();
@@ -223,6 +227,7 @@ function getCoresTema(tema) {
         return {
             primary: '#3a7bd5',
             success: '#2dd4a7',
+            successLight: '#6ee7b7',
             successDark: '#12a785',
             danger: '#f27272',
             dangerDark: '#d05555',
@@ -233,6 +238,7 @@ function getCoresTema(tema) {
     return {
         primary: '#2c5585',
         success: '#047857',
+        successLight: '#10b981',
         successDark: '#036f50',
         danger: '#b91c1c',
         dangerDark: '#991b1b',
