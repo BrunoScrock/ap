@@ -710,7 +710,7 @@ body {
     gap: 3px;
     padding: 10px 8px;
     border-radius: 12px;
-    background-color: color-mix(in srgb, var(--bg-muted) 55%, transparent);
+    background: linear-gradient(160deg, var(--bg-card), color-mix(in srgb, var(--primary) 5%, var(--bg-card)));
     border: 1px solid var(--border);
 }
 
@@ -1550,8 +1550,11 @@ h4 {
     padding: 12px;
     border-radius: 12px;
     min-width: 0;
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    background: linear-gradient(135deg,
+        color-mix(in srgb, var(--accent) 9%, var(--bg-card)),
+        color-mix(in srgb, var(--accent) 4%, var(--bg-card)));
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--bg-card));
+    box-shadow: var(--shadow-card, 0 10px 24px -14px rgba(0, 0, 0, 0.16));
 }
 
 .np-pago { --accent: var(--success); }
