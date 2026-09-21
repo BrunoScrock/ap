@@ -102,7 +102,7 @@ function renderEconomias() {
                     statusText = 'Em andamento';
                 }
                 return `
-                    <div class="item-card">
+                    <div class="item-card item-${statusClass}">
                         <div class="item-card-header">
                             <div class="item-name">
                                 ${Utils.escapeHTML(item.nome)}

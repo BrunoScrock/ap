@@ -1856,42 +1856,77 @@ h4 {
     box-shadow: 0 2px 8px -3px color-mix(in srgb, currentColor 55%, transparent);
 }
 
-/* Botões de ação com cores próprias */
-#tabelaPagamentos .acoes-cell .btn-acoes {
+/* Botões de ação com cores próprias (todas as páginas) */
+.acoes-cell .btn-acoes,
+.item-actions .btn-acoes {
     border: 1px solid transparent;
 }
 
-#tabelaPagamentos .acoes-cell .btn-marcar-pago {
+.acoes-cell .btn-marcar-pago,
+.acoes-cell .btn-marcar-pago.btn-marcar-pago,
+.item-actions .btn-marcar-pago {
     color: var(--success);
     background-color: color-mix(in srgb, var(--success) 12%, transparent);
     border-color: color-mix(in srgb, var(--success) 28%, transparent);
 }
 
-#tabelaPagamentos .acoes-cell .btn-marcar-pago:hover {
+.acoes-cell .btn-marcar-pago:hover,
+.item-actions .btn-marcar-pago:hover {
     color: var(--success);
     background-color: color-mix(in srgb, var(--success) 20%, transparent);
 }
 
-#tabelaPagamentos .acoes-cell .btn-editar {
+.acoes-cell .btn-editar,
+.acoes-cell .btn-editar-economia,
+.acoes-cell .btn-editar-item,
+.item-actions .btn-editar,
+.item-actions .btn-editar-economia,
+.item-actions .btn-editar-item {
     color: var(--primary);
     background-color: color-mix(in srgb, var(--primary) 12%, transparent);
     border-color: color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
-#tabelaPagamentos .acoes-cell .btn-editar:hover {
+.acoes-cell .btn-editar:hover,
+.acoes-cell .btn-editar-economia:hover,
+.acoes-cell .btn-editar-item:hover,
+.item-actions .btn-editar:hover,
+.item-actions .btn-editar-economia:hover,
+.item-actions .btn-editar-item:hover {
     color: var(--primary);
     background-color: color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
-#tabelaPagamentos .acoes-cell .btn-excluir {
+.acoes-cell .btn-excluir,
+.acoes-cell .btn-excluir-economia,
+.acoes-cell .btn-excluir-item,
+.item-actions .btn-excluir,
+.item-actions .btn-excluir-economia,
+.item-actions .btn-excluir-item {
     color: var(--danger);
     background-color: color-mix(in srgb, var(--danger) 12%, transparent);
     border-color: color-mix(in srgb, var(--danger) 28%, transparent);
 }
 
-#tabelaPagamentos .acoes-cell .btn-excluir:hover {
+.acoes-cell .btn-excluir:hover,
+.acoes-cell .btn-excluir-economia:hover,
+.acoes-cell .btn-excluir-item:hover,
+.item-actions .btn-excluir:hover,
+.item-actions .btn-excluir-economia:hover,
+.item-actions .btn-excluir-item:hover {
     color: var(--danger);
     background-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+/* Cards de itens (Economias) coloridos por status — estilo sub-blocos */
+.item-card.item-comprado {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--success) 9%, transparent), color-mix(in srgb, var(--success) 3%, transparent));
+    border-color: color-mix(in srgb, var(--success) 26%, transparent);
+}
+
+.item-card.item-em_andamento {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--warning) 8%, transparent), color-mix(in srgb, var(--warning) 3%, transparent));
+    border-color: color-mix(in srgb, var(--warning) 26%, transparent);
 }
 
 .resumo-card .resumo-rapido {
