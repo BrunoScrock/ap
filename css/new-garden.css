@@ -1828,6 +1828,72 @@ h4 {
     }
 }
 
+/* ==========================================================
+   CONTABILIDADE — linhas de parcelas por status e ações
+   (linha PAGO verde, PENDENTE laranja — no estilo dos sub-blocos)
+   ========================================================== */
+
+#tabelaPagamentos tbody tr.status-pago {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--success) 9%, transparent), color-mix(in srgb, var(--success) 3%, transparent));
+    box-shadow: inset 3px 0 0 var(--success);
+}
+
+#tabelaPagamentos tbody tr.status-pendente {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--warning) 8%, transparent), color-mix(in srgb, var(--warning) 3%, transparent));
+    box-shadow: inset 3px 0 0 var(--warning);
+}
+
+#tabelaPagamentos tbody tr.status-pago:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--success) 13%, transparent), color-mix(in srgb, var(--success) 5%, transparent));
+}
+
+#tabelaPagamentos tbody tr.status-pendente:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--warning) 12%, transparent), color-mix(in srgb, var(--warning) 5%, transparent));
+}
+
+#tabelaPagamentos tbody tr.status-pago .status,
+#tabelaPagamentos tbody tr.status-pendente .status {
+    box-shadow: 0 2px 8px -3px color-mix(in srgb, currentColor 55%, transparent);
+}
+
+/* Botões de ação com cores próprias */
+#tabelaPagamentos .acoes-cell .btn-acoes {
+    border: 1px solid transparent;
+}
+
+#tabelaPagamentos .acoes-cell .btn-marcar-pago {
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 12%, transparent);
+    border-color: color-mix(in srgb, var(--success) 28%, transparent);
+}
+
+#tabelaPagamentos .acoes-cell .btn-marcar-pago:hover {
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+#tabelaPagamentos .acoes-cell .btn-editar {
+    color: var(--primary);
+    background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+}
+
+#tabelaPagamentos .acoes-cell .btn-editar:hover {
+    color: var(--primary);
+    background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+#tabelaPagamentos .acoes-cell .btn-excluir {
+    color: var(--danger);
+    background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 28%, transparent);
+}
+
+#tabelaPagamentos .acoes-cell .btn-excluir:hover {
+    color: var(--danger);
+    background-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
 .resumo-card .resumo-rapido {
     margin-top: 10px;
 }

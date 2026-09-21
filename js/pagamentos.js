@@ -81,7 +81,7 @@ function renderPagamentos() {
         `;
 
         return `
-            <tr>
+            <tr class="linha-pagamento ${statusClass}">
                 <td data-label="Ref.">${p.referencia || ''}</td>
                 <td data-label="Descrição">${Utils.escapeHTML(p.descricao)}</td>
                 <td data-label="Vencimento">${Utils.formatarData(p.vencimento)}</td>
