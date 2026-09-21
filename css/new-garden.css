@@ -2157,8 +2157,8 @@ body::after {
 }
 
 .bottom-nav .nav-item.active {
-    color: #1e3a8a;
-    background-color: rgba(30, 58, 138, 0.14);
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 16%, transparent);
     font-weight: 600;
 }
 
@@ -2168,8 +2168,8 @@ body::after {
 }
 
 [data-theme="dark"] .bottom-nav .nav-item.active {
-    color: #8ab4f8;
-    background-color: rgba(30, 58, 138, 0.30);
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 22%, transparent);
 }
 
 /* ==========================================================
