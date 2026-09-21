@@ -2034,8 +2034,8 @@ h4 {
     font-weight: 700;
     letter-spacing: -0.5px;
     line-height: 1.2;
-    color: var(--text);
-    background: linear-gradient(115deg, var(--text) 45%, var(--primary) 135%);
+    color: #ffffff;
+    background: linear-gradient(115deg, #ffffff 38%, color-mix(in srgb, #ffffff 62%, var(--primary-light)) 115%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -2043,6 +2043,10 @@ h4 {
     opacity: 0;
     transform: translateY(16px);
     animation: tituloEntrada 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) 0.1s forwards;
+}
+
+.page-hero p {
+    color: rgba(230, 238, 248, 0.74);
 }
 
 @keyframes tituloEntrada {
@@ -2107,4 +2111,19 @@ h4 {
     border-radius: inherit;
     background: linear-gradient(140deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 45%, rgba(255, 255, 255, 0.10));
     pointer-events: none;
+}
+
+/* ==========================================================
+   FOTO DE FUNDO EM TODAS AS PÁGINAS (tema New Garden)
+   ========================================================== */
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(8, 18, 33, 0.60) 0%, rgba(8, 18, 33, 0.72) 55%, rgba(8, 18, 33, 0.88) 100%),
+        url('../assets/bg-tema.jpg') center top / cover no-repeat;
 }
