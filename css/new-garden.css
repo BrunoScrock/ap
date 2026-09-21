@@ -95,7 +95,7 @@ body {
    ========================================== */
 
 .app-header {
-    background-color: color-mix(in srgb, var(--bg-header) 88%, black 6%, transparent 6%);
+    background-color: color-mix(in srgb, var(--bg-header) 84%, transparent);
     -webkit-backdrop-filter: blur(16px) saturate(1.5);
     backdrop-filter: blur(16px) saturate(1.5);
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
