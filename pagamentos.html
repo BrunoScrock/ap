@@ -99,36 +99,41 @@
                     <h2>Controle de Parcelas do Contrato</h2>
                 </div>
 
-                <div class="totals-grid" id="totaisPagamentos">
-                    <div class="card card-stat" data-accent="success">
-                        <div class="card-label">Total Pago</div>
-                        <div class="card-value" id="totalPagoGeral">R$ 0,00</div>
+                <div class="saldo-hero pagamentos-hero">
+                    <div class="saldo-hero-top">
+                        <div class="saldo-hero-label">Total Pago do Contrato</div>
+                        <div class="saldo-hero-badge"><span id="percentualQuitacaoPag">0%</span> quitado</div>
                     </div>
-                    <div class="card card-stat" data-accent="primary">
+                    <div class="saldo-hero-value" id="totalPagoGeral">R$ 0,00</div>
+                    <div class="saldo-hero-stats">
+                        <div class="saldo-hero-stat">
+                            <span class="saldo-hero-stat-label">Total Pago + Juros de Obra</span>
+                            <span class="saldo-hero-stat-value" id="totalPagoAno">R$ 0,00</span>
+                        </div>
+                        <div class="saldo-hero-stat">
+                            <span class="saldo-hero-stat-label">INCC / Juros de Obra</span>
+                            <span class="saldo-hero-stat-value" id="totalINCCGeral">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cards-grid stat-grid-2">
+                    <div class="card card-stat" data-accent="green">
                         <div class="card-label">Quantidade de Pagamentos</div>
                         <div class="card-value" id="qtdPagamentos">0</div>
                     </div>
-                    <div class="card card-stat" data-accent="yellow">
+                    <div class="card card-stat" data-accent="warning">
                         <div class="card-label">Total Pago no Mês</div>
                         <div class="card-value" id="totalPagoMes">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="green">
-                        <div class="card-label">Total Pago + Juros de Obra</div>
-                        <div class="card-value" id="totalPagoAno">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="yellow">
-                        <div class="card-label">INCC / Juros de Obra</div>
-                        <div class="card-value" id="totalINCCGeral">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="warning">
-                        <div class="card-label">Percentual de Quitação</div>
-                        <div class="card-value" id="percentualQuitacaoPag">0%</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-title-row">
-                        <div class="card-title">Parcelas</div>
+                        <div class="card-title-block">
+                            <div class="card-title">Parcelas do Contrato</div>
+                            <p class="card-subtitle">Registre e acompanhe o histórico de pagamentos.</p>
+                        </div>
                         <div class="btn-group">
                             <button class="btn btn-primary" id="btnNovoPagamento">+ Novo Pagamento</button>
                         </div>

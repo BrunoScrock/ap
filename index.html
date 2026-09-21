@@ -100,6 +100,19 @@
                     <p>Acompanhe o progresso do seu investimento no apartamento 1409.</p>
                 </div>
 
+                <div class="saldo-hero">
+                    <div class="saldo-hero-top">
+                        <div class="saldo-hero-label">Saldo Devedor</div>
+                        <div class="saldo-hero-badge"><span id="progressoQuitacao">0%</span> quitado</div>
+                    </div>
+                    <div class="saldo-hero-value" id="saldoDevedor">R$ 0,00</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBarAtivo">
+                            <span>0%</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="cards-grid stat-grid">
                     <div class="card card-stat" data-accent="primary">
                         <div class="card-label">Valor Total (Contrato)</div>
@@ -109,17 +122,6 @@
                         <div class="card-label">Total Pago</div>
                         <div class="card-value" id="totalPago">R$ 0,00</div>
                     </div>
-                    <div class="card card-stat" data-accent="danger">
-                        <div class="card-label">Saldo Devedor</div>
-                        <div class="card-value" id="saldoDevedor">R$ 0,00</div>
-                    </div>
-                    <div class="card card-stat" data-accent="warning">
-                        <div class="card-label">Progresso Quitação</div>
-                        <div class="card-value" id="progressoQuitacao">0%</div>
-                    </div>
-                </div>
-
-                <div class="cards-grid stat-grid-2">
                     <div class="card card-stat" data-accent="green">
                         <div class="card-label">Total Guardado</div>
                         <div class="card-value" id="totalGuardado">R$ 0,00</div>
@@ -130,18 +132,9 @@
                     </div>
                 </div>
 
-                <div class="card progress-card">
-                    <div class="card-title">Progresso de Quitação</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBarAtivo">
-                            <span>0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-info">
-                        <span id="valorPagoInfo">R$ 0,00</span>
-                        <span>de</span>
-                        <span id="valorTotalInfo">R$ 0,00</span>
-                    </div>
+                <div class="card resumo-card">
+                    <div class="card-title">Próximos Pagamentos</div>
+                    <p class="card-subtitle">Resumo rápido das próximas parcelas e valores guardados.</p>
                     <div class="resumo-rapido" id="resumoRapido"></div>
                 </div>
 
