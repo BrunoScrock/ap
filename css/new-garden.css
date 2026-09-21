@@ -2157,8 +2157,8 @@ body::after {
 }
 
 .bottom-nav .nav-item.active {
-    color: #f5c542;
-    background-color: rgba(245, 197, 66, 0.16);
+    color: #1e3a8a;
+    background-color: rgba(30, 58, 138, 0.14);
     font-weight: 600;
 }
 
@@ -2168,8 +2168,8 @@ body::after {
 }
 
 [data-theme="dark"] .bottom-nav .nav-item.active {
-    color: #f5c542;
-    background-color: rgba(245, 197, 66, 0.14);
+    color: #8ab4f8;
+    background-color: rgba(30, 58, 138, 0.30);
 }
 
 /* ==========================================================
@@ -2190,28 +2190,39 @@ body::after {
 .person-banner {
     margin: 20px 0 12px;
     padding: 12px 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: linear-gradient(150deg, rgba(200, 216, 236, 0.75), rgba(178, 194, 216, 0.65));
-    -webkit-backdrop-filter: blur(14px) saturate(1.15);
-    backdrop-filter: blur(14px) saturate(1.15);
-    animation: bannerFlutua 4.5s ease-in-out infinite;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: none;
+    box-shadow: var(--shadow);
 }
 
-@keyframes bannerFlutua {
-    0%, 100% {
-        transform: translateY(0);
-        box-shadow: 0 10px 24px -14px rgba(96, 118, 150, 0.35);
-    }
-    50% {
-        transform: translateY(-3px);
-        box-shadow: 0 18px 34px -16px rgba(96, 118, 150, 0.55);
-    }
+.person-section.bruno .person-banner {
+    border-left: 3px solid #3a7bd5;
+    border-right: 3px solid #3a7bd5;
+}
+
+.person-section.geovana .person-banner {
+    border-left: 3px solid #db2777;
+    border-right: 3px solid #db2777;
 }
 
 .person-name {
+    display: inline-block;
+    transform-origin: left center;
     color: var(--person-accent, var(--primary));
     font-size: 20px;
+    animation: nomePulsa 2.8s ease-in-out infinite;
+}
+
+@keyframes nomePulsa {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+    50% {
+        transform: scale(1.07);
+        text-shadow: 0 5px 16px color-mix(in srgb, var(--person-accent, var(--primary)) 40%, transparent);
+    }
 }
 
 /* Todos os blocos de Bruno com borda azul nas laterais */
@@ -2239,4 +2250,10 @@ body::after {
     border-color: var(--success);
     box-shadow: 0 0 0 1px var(--success);
     background-color: rgba(16, 185, 129, 0.10);
+}
+
+/* Bloco "Resumo Final do Mês": azul (Bruno) à esquerda e rosa (Geovana) à direita */
+.card:has(#tabelaResumoFinal) {
+    border-left: 3px solid #3a7bd5;
+    border-right: 3px solid #db2777;
 }
