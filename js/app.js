@@ -89,6 +89,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     App.iniciar();
     window.App = App;
 
+    // Cabeçalho: transparente no topo, mostra o fundo ao rolar a página
+    const header = document.querySelector('.app-header');
+    if (header) {
+        const atualizarHeader = () => {
+            header.classList.toggle('is-scrolled', (window.scrollY || window.pageYOffset) > 28);
+        };
+        window.addEventListener('scroll', atualizarHeader, { passive: true });
+        atualizarHeader();
+    }
+
     // 1) Autenticacao: gate no primeiro paint, nuvem e sessao verificadas
     await Auth.iniciar();
 
