@@ -1929,6 +1929,25 @@ h4 {
     border-color: color-mix(in srgb, var(--warning) 26%, transparent);
 }
 
+/* Valores Guardados — linhas coloridas pelo tipo */
+#tabelaEconomias tbody tr.economia-balao {
+    background: linear-gradient(135deg, color-mix(in srgb, #7c5bd4 9%, transparent), color-mix(in srgb, #7c5bd4 3%, transparent));
+    box-shadow: inset 3px 0 0 #7c5bd4;
+}
+
+#tabelaEconomias tbody tr.economia-balao:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, #7c5bd4 13%, transparent), color-mix(in srgb, #7c5bd4 5%, transparent));
+}
+
+#tabelaEconomias tbody tr.economia-compras {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--success) 9%, transparent), color-mix(in srgb, var(--success) 3%, transparent));
+    box-shadow: inset 3px 0 0 var(--success);
+}
+
+#tabelaEconomias tbody tr.economia-compras:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--success) 13%, transparent), color-mix(in srgb, var(--success) 5%, transparent));
+}
+
 .resumo-card .resumo-rapido {
     margin-top: 10px;
 }

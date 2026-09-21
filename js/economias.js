@@ -50,7 +50,7 @@ function renderEconomias() {
     if (corpo) {
         corpo.innerHTML = economias.length
             ? economias.map(e => `
-                <tr>
+                <tr class="linha-economia ${e.destino === 'pagamento-balao' ? 'economia-balao' : 'economia-compras'}">
                     <td data-label="Valor" class="text-right">${Utils.formatarMoeda(e.valor)}</td>
                     <td data-label="Data">${Utils.formatarData(e.data)}</td>
                     <td data-label="Tipo">${e.destino === 'pagamento-balao'
