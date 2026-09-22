@@ -2476,3 +2476,164 @@ body::after {
         box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.28);
     }
 }
+
+/* ==========================================================
+   MENSAIS — ícones e espaçamento interno nos blocos de
+   resumo financeiro e no resumo final do mês
+   ========================================================== */
+
+/* Títulos dos blocos com ícone */
+.resumo-bruno .card-title,
+.resumo-geovana .card-title,
+.card:has(#tabelaResumoFinal) .card-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-top: 4px;
+}
+
+.card:has(#tabelaResumoFinal) .card-title {
+    padding-bottom: 6px;
+}
+
+.title-icon {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.resumo-bruno .title-icon {
+    background: linear-gradient(135deg, #3a7bd5, #2563eb);
+}
+
+.resumo-geovana .title-icon {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+.card:has(#tabelaResumoFinal) .title-icon {
+    background: linear-gradient(135deg, #2563eb, #db2777);
+}
+
+.title-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* Grade do resumo com mais respiro e ícone por tile */
+.resumos-grid .totals-grid {
+    gap: 11px;
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+
+.resumos-grid .card-stat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "icon label"
+        "icon value";
+    align-items: center;
+    column-gap: 11px;
+    row-gap: 2px;
+    min-height: 74px;
+    padding: 12px 14px;
+}
+
+.stat-icon {
+    grid-area: icon;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    color: var(--person-accent, var(--primary));
+    background: color-mix(in srgb, var(--person-accent, var(--primary)) 14%, transparent);
+}
+
+.stat-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.resumos-grid .card-stat .card-label {
+    grid-area: label;
+    align-self: end;
+}
+
+.resumos-grid .card-stat .card-value {
+    grid-area: value;
+    align-self: start;
+    font-size: 18px;
+}
+
+/* Resumo final do mês: tabela com mais respiro no desktop */
+#tabelaResumoFinal.data-table thead th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#tabelaResumoFinal.data-table tbody td {
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+/* Modo mobile: rótulos Bruno/Geovana como pills arredondadas */
+@media (max-width: 599px) {
+    #tabelaResumoFinal tbody td[data-label] {
+        background: transparent;
+    }
+
+    #tabelaResumoFinal tbody td:nth-child(2),
+    #tabelaResumoFinal tbody td:nth-child(3) {
+        border-radius: 0;
+    }
+
+    #tabelaResumoFinal tbody td[data-label]::before {
+        content: attr(data-label);
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding: 3px 11px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #2563eb;
+        background: rgba(58, 123, 213, 0.10);
+        border: 1px solid color-mix(in srgb, #3a7bd5 32%, transparent);
+    }
+
+    #tabelaResumoFinal tbody td[data-label="Geovana"]::before {
+        color: #db2777;
+        background: rgba(219, 39, 119, 0.10);
+        border-color: color-mix(in srgb, #db2777 32%, transparent);
+    }
+
+    #tabelaResumoFinal tbody tr {
+        padding: 8px 14px 10px;
+    }
+
+    #tabelaResumoFinal tbody td {
+        padding: 9px 0;
+    }
+
+    #tabelaResumoFinal tbody td:first-child {
+        padding: 2px 0 10px;
+        font-size: 12px;
+    }
+
+    .resumos-grid .stat-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+    }
+
+    .resumos-grid .card-stat {
+        min-height: 66px;
+        padding: 10px 12px;
+    }
+}
