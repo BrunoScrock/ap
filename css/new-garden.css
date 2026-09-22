@@ -2172,6 +2172,17 @@ body::after {
     background-color: color-mix(in srgb, var(--success) 22%, transparent);
 }
 
+/* Valor Total (Contrato): nome "Contrato" na segunda linha */
+.card-label .label-sub {
+    display: block;
+    margin-top: 1px;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.72;
+    white-space: nowrap;
+}
+
 /* ==========================================================
    MENSAIS — banner do nome em vidro fosco com animação;
    blocos de Bruno/Geovana só com borda azul/rosa nas laterais
@@ -2225,24 +2236,103 @@ body::after {
     }
 }
 
-/* Todos os blocos de Bruno com borda azul nas laterais */
+/* Todos os blocos de Bruno com borda azul nas laterais (apenas os containers,
+   sem aplicar a cada tile do resumo — evita cores sobrepostas) */
 .person-section.bruno > .card,
 .person-section.bruno .income-total,
 .resumo-bruno,
-.resumo-bruno .card-stat,
 .split-quem.bruno {
     border-left: 3px solid #3a7bd5;
     border-right: 3px solid #3a7bd5;
 }
 
-/* Todos os blocos de Geovana com borda rosa nas laterais */
+/* Todos os blocos de Geovana com borda rosa nas laterais (apenas os containers) */
 .person-section.geovana > .card,
 .person-section.geovana .income-total,
 .resumo-geovana,
-.resumo-geovana .card-stat,
 .split-quem.geovana {
     border-left: 3px solid #db2777;
     border-right: 3px solid #db2777;
+}
+
+/* Faixa de acento no topo do card de resumo de cada pessoa */
+.resumo-bruno,
+.resumo-geovana {
+    position: relative;
+    overflow: hidden;
+}
+
+.resumo-bruno::before,
+.resumo-geovana::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.resumo-bruno::before {
+    background: linear-gradient(90deg, #3a7bd5, #2563eb);
+}
+
+.resumo-geovana::before {
+    background: linear-gradient(90deg, #ec4899, #db2777);
+}
+
+.resumo-bruno .card-title {
+    color: #2563eb;
+}
+
+.resumo-geovana .card-title {
+    color: #db2777;
+}
+
+/* Tiles dos resumos financeiros: limpos e neutros (remove barras laterais
+   por tile e fundos coloridos dos chips — só o saldo final mantém o realce) */
+.resumos-grid .card-stat {
+    background-color: var(--bg-card);
+    border-color: var(--border);
+}
+
+.resumos-grid .card-stat::before {
+    content: none;
+}
+
+.resumos-grid .card-stat:not(.highlight-final) .card-value {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.resumos-grid .card-stat:not(.highlight-final) .card-value::before {
+    display: none;
+}
+
+.resumos-grid .card-stat:not(.highlight-final) .card-value.positive {
+    color: var(--success);
+}
+
+.resumos-grid .card-stat:not(.highlight-final) .card-value.negative {
+    color: var(--danger);
+}
+
+.resumos-grid .card-stat.highlight-final {
+    background-color: var(--bg-card);
+    border-color: var(--border);
+}
+
+/* Grade dos resumos: 2 colunas (incl. celular) para leitura mais rápida */
+.resumos-grid .totals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 380px) {
+    .resumos-grid .totals-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Divisão do apartamento: manter o quadro verde de quem paga mais */
