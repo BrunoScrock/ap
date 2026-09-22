@@ -238,7 +238,7 @@ function renderCredito(mes, pessoa, p) {
     corpo.innerHTML = p.credito.length
         ? p.credito.map(c => `
             <tr>
-                <td data-label="Descrição">${Utils.escapeHTML(c.descricao)}</td>
+                <td data-label="Descrição">${c.descricao ? `<span class="tag-descricao">${Utils.escapeHTML(c.descricao)}</span>` : '—'}</td>
                 <td data-label="Valor" class="text-right">${Utils.formatarMoeda(c.valor)}</td>
                 <td data-label="Tipo">${c.tipo === 'parcelado' ? 'Parcelado' : 'Fixo'}</td>
                 <td data-label="Parcelas">${c.quantParcelas || '—'}</td>
@@ -266,7 +266,7 @@ function renderReembolsos(mes, pessoa, p) {
     corpo.innerHTML = p.reembolsos.length
         ? p.reembolsos.map(r => `
             <tr>
-                <td data-label="Descrição">${Utils.escapeHTML(r.descricao)}</td>
+                <td data-label="Descrição">${r.descricao ? `<span class="tag-descricao">${Utils.escapeHTML(r.descricao)}</span>` : '—'}</td>
                 <td data-label="Valor" class="text-right">${Utils.formatarMoeda(r.valor)}</td>
                 <td data-label="Responsável">${Utils.escapeHTML(r.responsavel) || '—'}</td>
                 <td data-label="Status">${badgeReembolso(r.status)}</td>
@@ -295,7 +295,7 @@ function renderDebito(mes, pessoa, p) {
     corpo.innerHTML = p.debito.length
         ? p.debito.map(d => `
             <tr>
-                <td data-label="Descrição">${Utils.escapeHTML(d.descricao)}</td>
+                <td data-label="Descrição">${d.descricao ? `<span class="tag-descricao">${Utils.escapeHTML(d.descricao)}</span>` : '—'}</td>
                 <td data-label="Valor" class="text-right">${Utils.formatarMoeda(d.valor)}</td>
                 <td data-label="Categoria">${Utils.escapeHTML(d.categoria) || '—'}</td>
                 <td data-label="Data">${Utils.formatarData(d.data)}</td>
@@ -362,13 +362,16 @@ function renderResumoFinal(mes, divisao) {
         ['Saldo final', saldoFinal(mes.bruno, divisao.brunoParte), saldoFinal(mes.geovana, divisao.geovanaParte)]
     ];
 
-    corpo.innerHTML = linhas.map(([label, vb, vg]) => `
-        <tr>
-            <td>${label}</td>
+    corpo.innerHTML = linhas.map(([label, vb, vg]) => {
+        const final = label === 'Saldo final';
+        return `
+        <tr class="${final ? 'linha-final' : ''}">
+            <td><span class="tag-resumo">${label}</span></td>
             <td data-label="Bruno" class="text-right">${Utils.formatarMoeda(vb)}</td>
             <td data-label="Geovana" class="text-right">${Utils.formatarMoeda(vg)}</td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function renderMensagensFinal(mes, divisao) {

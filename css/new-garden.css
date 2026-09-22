@@ -2375,3 +2375,104 @@ body::after {
     color: #db2777;
     font-weight: 700;
 }
+
+/* ==========================================================
+   MENSAIS — tags de descrição nas tabelas e refinamentos
+   dos blocos de resumo financeiro e resumo final
+   ========================================================== */
+
+/* Tag base de descrição (cartão de crédito, débito e reembolsos) */
+.tag-descricao {
+    display: inline-block;
+    max-width: 100%;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    color: var(--text);
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* Tags de descrição coloridas por pessoa */
+.person-section.bruno td .tag-descricao {
+    color: #2563eb;
+    background: rgba(58, 123, 213, 0.10);
+    border-color: color-mix(in srgb, #3a7bd5 38%, transparent);
+}
+
+.person-section.geovana td .tag-descricao {
+    color: #db2777;
+    background: rgba(219, 39, 119, 0.10);
+    border-color: color-mix(in srgb, #db2777 38%, transparent);
+}
+
+@media (hover: hover) {
+    .tag-descricao:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 2px 6px -2px color-mix(in srgb, currentColor 45%, transparent);
+    }
+}
+
+/* Tag da coluna de informação no Resumo Final do Mês */
+.tag-resumo {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--text) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+}
+
+/* Cabeçalho do Resumo Final do Mês mais harmônico */
+#tabelaResumoFinal thead th {
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    background-color: color-mix(in srgb, var(--text) 5%, transparent);
+}
+
+/* Linha de "Saldo final" em destaque */
+#tabelaResumoFinal tr.linha-final td {
+    background-color: color-mix(in srgb, var(--success) 8%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--success) 35%, var(--border));
+}
+
+#tabelaResumoFinal tr.linha-final td .tag-resumo {
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 12%, transparent);
+    border-color: color-mix(in srgb, var(--success) 38%, transparent);
+}
+
+/* Tiles do Resumo Financeiro: toque final (raio, elevação, rótulos) */
+.resumos-grid .card-stat {
+    border-radius: 14px;
+    box-shadow: 0 2px 8px -6px rgba(0, 0, 0, 0.20);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.resumos-grid .card-stat .card-label {
+    font-size: 10px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+@media (hover: hover) {
+    .resumos-grid .card-stat:hover {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--person-accent, var(--primary)) 40%, var(--border));
+        box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.28);
+    }
+}
