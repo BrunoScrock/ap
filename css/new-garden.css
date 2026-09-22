@@ -2172,19 +2172,8 @@ body::after {
     background-color: color-mix(in srgb, var(--success) 22%, transparent);
 }
 
-/* Valor Total (Contrato): nome "Contrato" na segunda linha */
-.card-label .label-sub {
-    display: block;
-    margin-top: 1px;
-    font-size: 0.78em;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    opacity: 0.72;
-    white-space: nowrap;
-}
-
 /* ==========================================================
-   MENSAIS — banner do nome em vidro fosco com animação;
+   MENSAIS — banner do nome em vidro fosco;
    blocos de Bruno/Geovana só com borda azul/rosa nas laterais
    ========================================================== */
 
@@ -2219,21 +2208,8 @@ body::after {
 
 .person-name {
     display: inline-block;
-    transform-origin: left center;
     color: var(--person-accent, var(--primary));
     font-size: 20px;
-    animation: nomePulsa 2.8s ease-in-out infinite;
-}
-
-@keyframes nomePulsa {
-    0%, 100% {
-        transform: scale(1);
-        text-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    }
-    50% {
-        transform: scale(1.07);
-        text-shadow: 0 5px 16px color-mix(in srgb, var(--person-accent, var(--primary)) 40%, transparent);
-    }
 }
 
 /* Todos os blocos de Bruno com borda azul nas laterais (apenas os containers,
@@ -2504,6 +2480,7 @@ body::after {
     border-radius: 8px;
     color: #ffffff;
     flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--success));
 }
 
 .resumo-bruno .title-icon {
@@ -2514,6 +2491,14 @@ body::after {
     background: linear-gradient(135deg, #ec4899, #db2777);
 }
 
+.person-section.bruno .title-icon {
+    background: linear-gradient(135deg, #3a7bd5, #2563eb);
+}
+
+.person-section.geovana .title-icon {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
 .card:has(#tabelaResumoFinal) .title-icon {
     background: linear-gradient(135deg, #2563eb, #db2777);
 }
@@ -2521,6 +2506,13 @@ body::after {
 .title-icon svg {
     width: 15px;
     height: 15px;
+}
+
+/* Ícones de título: estilo padrão para os blocos em geral */
+.card-title:has(.title-icon) {
+    display: flex;
+    align-items: center;
+    gap: 9px;
 }
 
 /* Grade do resumo com mais respiro e ícone por tile */
