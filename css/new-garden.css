@@ -2156,20 +2156,22 @@ body::after {
     background-color: rgba(255, 255, 255, 0.14);
 }
 
-.bottom-nav .nav-item.active {
-    color: var(--success);
-    background-color: color-mix(in srgb, var(--success) 16%, transparent);
-    font-weight: 600;
-}
-
 [data-theme="dark"] .bottom-nav .nav-item:hover {
     color: #ffffff;
     background-color: rgba(255, 255, 255, 0.12);
 }
 
+.bottom-nav .nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #059669, #10b981);
+    font-weight: 700;
+    box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.55);
+}
+
 [data-theme="dark"] .bottom-nav .nav-item.active {
-    color: var(--success);
-    background-color: color-mix(in srgb, var(--success) 22%, transparent);
+    color: #052e21;
+    background: linear-gradient(135deg, #34d399, #2dd4a7);
+    box-shadow: 0 4px 14px -2px rgba(52, 211, 153, 0.55);
 }
 
 /* ==========================================================
